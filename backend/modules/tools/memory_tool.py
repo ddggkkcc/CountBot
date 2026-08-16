@@ -188,7 +188,12 @@ class MemoryTool(Tool):
 
     @property
     def description(self) -> str:
-        return "Long-term memory: `write`, `search`, or `read`."
+        return (
+            "Long-term memory: `write`, `search`, or `read`. "
+            "Search returns keyword-matched entries as clues only; "
+            "if nothing matches, say so plainly and never answer "
+            "from unrelated entries or fabricate."
+        )
 
     @property
     def parameters(self) -> Dict[str, Any]:

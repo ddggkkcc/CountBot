@@ -1,0 +1,10 @@
+{
+  "skills": {
+    "ashan-skill-creator": {
+      "name": "Skill Creator",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=ashan-skill-creator",
+      "source": "skillhub.tencent.com",
+      "version": "1.0.3"
+    }
+  }
+}

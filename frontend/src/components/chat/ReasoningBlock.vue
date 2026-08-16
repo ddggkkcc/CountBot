@@ -1,5 +1,9 @@
 <template>
-  <section class="reasoning-block" :class="{ 'is-expanded': isExpanded, 'is-thinking': isThinking, 'is-embedded': embedded }">
+  <section
+    v-if="!isHidden"
+    class="reasoning-block"
+    :class="{ 'is-expanded': isExpanded, 'is-thinking': isThinking, 'is-embedded': embedded }"
+  >
     <div
       role="button"
       tabindex="0"
@@ -116,6 +120,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { BrainCircuit as BrainCircuitIcon, Copy as CopyIcon, Check as CheckIcon } from 'lucide-vue-next'
 import { useToast } from '@/composables/useToast'
+import { useReasoningDisplay } from '@/composables/useReasoningDisplay'
 
 interface Props {
   content: string
@@ -132,9 +137,16 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { t } = useI18n()
 const toast = useToast()
+const { displayMode } = useReasoningDisplay()
 
-const isExpanded = ref(props.isThinking || props.defaultExpanded)
+// 默认展开状态由全局显示偏好决定；思考过程中（isThinking）不再强制展开，
+// 折叠模式下思考过程也默认折叠，通过「思考中」状态与实时摘要提示用户。
+const isExpanded = ref(displayMode.value === 'expanded')
+// 标记用户是否手动操作过展开/折叠，手动操作后不再跟随显示模式自动变化
+const userToggled = ref(false)
 const copied = ref(false)
+
+const isHidden = computed(() => displayMode.value === 'hidden')
 
 const normalizedContent = computed(() => props.content.replace(/\r\n/g, '\n'))
 
@@ -180,6 +192,7 @@ const summaryText = computed(() => {
 })
 
 const toggleExpand = () => {
+  userToggled.value = true
   isExpanded.value = !isExpanded.value
 }
 
@@ -198,16 +211,22 @@ const copyContent = async () => {
   }
 }
 
+// 思考状态变化不再强制展开；思考结束时，若用户未手动操作过，恢复为显示模式决定的默认状态
 watch(
   () => props.isThinking,
   (isThinking, wasThinking) => {
-    if (isThinking && !wasThinking) {
-      isExpanded.value = true
-      return
+    if (!isThinking && wasThinking && !userToggled.value) {
+      isExpanded.value = displayMode.value === 'expanded'
     }
+  }
+)
 
-    if (!isThinking && wasThinking) {
-      isExpanded.value = false
+// 显示模式切换时，若用户未手动操作过，跟随新模式调整默认展开状态
+watch(
+  displayMode,
+  (mode) => {
+    if (!userToggled.value) {
+      isExpanded.value = mode === 'expanded'
     }
   }
 )

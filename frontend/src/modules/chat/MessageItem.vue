@@ -25,7 +25,7 @@
         class="assistant-response-shell assistant-response-shell-interleaved"
       >
         <ReasoningBlock
-          v-if="message.reasoningContent && message.role === 'assistant'"
+          v-if="message.reasoningContent && message.role === 'assistant' && !reasoningHidden"
           :content="message.reasoningContent"
           :is-thinking="Boolean(message.isThinking && message.reasoningContent)"
           :default-expanded="false"
@@ -306,13 +306,14 @@
         class="assistant-response-shell"
       >
         <ReasoningBlock
+          v-if="!reasoningHidden"
           :content="message.reasoningContent || ''"
           :is-thinking="Boolean(message.isThinking && message.reasoningContent)"
           :default-expanded="false"
           embedded
         />
         <div
-          v-if="displayContent && (!isReplaying || replayContent !== null)"
+          v-if="displayContent && displayContent !== message.reasoningContent && (!isReplaying || replayContent !== null)"
           class="message-content assistant-response-body markdown-content"
           :class="{ 'typewriter-active': isReplaying }"
           v-html="replayContent !== null ? replayContent : renderedContent"
@@ -428,6 +429,7 @@ import { useMarkdown } from '@/composables/useMarkdown'
 import { useMermaid } from '@/composables/useMermaid'
 import { useI18n } from 'vue-i18n'
 import { useToast } from '@/composables/useToast'
+import { useReasoningDisplay } from '@/composables/useReasoningDisplay'
 import { copyTextToClipboard } from '@/utils/clipboard'
 import { chatAPI } from '@/api'
 import ToolCallCard from '@/components/chat/ToolCallCard.vue'
@@ -459,6 +461,7 @@ const { renderMarkdown } = useMarkdown()
 const { t } = useI18n()
 const toast = useToast()
 const chatStore = useChatStore()
+const { displayMode } = useReasoningDisplay()
 
 const HISTORY_TOOL_PAGE_SIZE = 20
 const HISTORY_TOOL_PREVIEW_LIMIT = 1200
@@ -864,6 +867,11 @@ const shouldFuseReasoningReply = computed(() => {
     !useInterleavedMode.value
   )
 })
+
+/**
+ * 思考过程是否被设置为隐藏显示（设置项：不显示）
+ */
+const reasoningHidden = computed(() => displayMode.value === 'hidden')
 
 /**
  * 重放时按可见计数截取 agent 列表；非重放时返回全部。

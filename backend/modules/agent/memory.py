@@ -142,28 +142,47 @@ class MemoryStore:
         results = []
         for i, line in enumerate(lines):
             line_lower = line.lower()
-            
+
+            # 统计实际命中的关键词数量
+            matched = [kw for kw in keywords if kw in line_lower]
+
             # 根据匹配模式选择逻辑
             if match_mode == "and":
                 # AND 逻辑：所有关键词都必须匹配
-                if all(kw in line_lower for kw in keywords):
-                    results.append(f"[{i + 1}] {line}")
+                if len(matched) == len(keywords):
+                    results.append((len(matched), i, line))
             else:
                 # OR 逻辑：任意关键词匹配即可
-                if any(kw in line_lower for kw in keywords):
-                    results.append(f"[{i + 1}] {line}")
+                if matched:
+                    results.append((len(matched), i, line))
 
         if not results:
             mode_text = "任意" if match_mode == "or" else "全部"
             return f"未找到包含 {mode_text} 关键词 {', '.join(keywords)} 的记忆"
 
-        # 限制结果数
-        if len(results) > max_results:
-            total_found = len(results)
-            results = results[:max_results]
-            results.append(f"... 共 {total_found} 条匹配，仅显示前 {max_results} 条")
+        # 按匹配关键词数降序排序（更相关的排在前面），同分按行号
+        results.sort(key=lambda item: (-item[0], item[1]))
 
-        return "\n".join(results)
+        # 限制结果数
+        total_found = len(results)
+        if total_found > max_results:
+            results = results[:max_results]
+
+        output_lines = []
+        for match_count, i, line in results:
+            # 标注相关度：命中多个关键词时明确提示，帮助模型区分强/弱相关
+            if match_count >= 2:
+                tag = f"[命中{match_count}个关键词] "
+            elif match_count == 1 and len(keywords) > 1:
+                tag = "[弱相关] "
+            else:
+                tag = ""
+            output_lines.append(f"[{i + 1}] {tag}{line}")
+
+        if total_found > max_results:
+            output_lines.append(f"... 共 {total_found} 条匹配，仅显示前 {max_results} 条")
+
+        return "\n".join(output_lines)
 
     def delete_lines(self, line_numbers: List[int]) -> int:
         """删除指定行号的记忆
