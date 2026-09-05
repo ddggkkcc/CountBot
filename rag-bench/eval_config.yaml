@@ -1,0 +1,181 @@
+# ============================================
+# RAG 评测口径配置（外部旁证 / 公开基准部分）
+# ============================================
+# 对应文档：docs/rag/archive/test-plan.md §4（三层执行方案）
+#          docs/rag/archive/eval-datasets.md §4（建议量化组合拳，非门禁）
+#
+# 这是"唯一口径来源"：改指标、改 k 值、改数据集都在这里改，
+# 实验卡片引用本文件版本号，保证跨实验可比。
+#
+# ⚠️ 分工与 run_g0.py / run_g1.py 的关系：
+#    自建 60 题的 G 轮次实验（主论据）由 run_g*.py 驱动，口径内嵌其脚本；
+#    本文件管公开中文基准（C-MTEB 等）的口径，由 scripts/l1_eval.py 消费。
+#
+# ⚠️ 单变量原则（archive/test-plan.md §8）：一次只改一处。
+#    换数据集和换算法都是变量，不可同时动。
+
+version: 2
+
+# ── 通用实验记录字段（每张实验卡片必填）────────
+provenance:
+  required_fields:
+    - judge_model_version   # LLM judge 模型+版本，或 "程序化打分"
+    - dataset_version       # 数据集 commit / 版本（MTEB 类数据集会更新）
+    - seed                  # 固定随机种子
+    - date
+  note: >
+    judge 不换模型/版本（archive/test-plan.md §1.2 坑④）；
+    数据集版本必须记录，跨版本分数不可比（archive/eval-datasets.md §6）。
+
+# ════════════════════════════════════════════
+# L1 · 检索组件测试（程序化打分，最可复现）
+# ════════════════════════════════════════════
+l1:
+  tool: ranx
+  # 指标口径与 C-MTEB 官方一致，便于与已发表基线对照
+  metrics:
+    - "ndcg@10"     # 主指标，与 C-MTEB/BEIR 一致
+    - "recall@50"   # 深层召回，对应 S3 压力题
+    - "mrr@10"
+    - "map@10"
+    # ── 块级轮次追加（Phase 1 任务 1）：对齐生成 top-6 口径 ──
+    # 生产 ask 注入 top-6 块，hit_rate@6 即"期望文档进入生成上下文"的比例
+    - "hit_rate@6"
+    - "mrr@6"
+    - "recall@6"
+  k_values: [5, 10, 20, 50]
+
+  # ── 中文基准（主力，外部旁证非门禁）────────────
+  datasets:
+    - id: "C-MTEB/T2Retrieval"
+      role: primary
+      size: 24832
+      why: "规模最大的中文 query-to-passage 检索集"
+      metrics: ["ndcg@10", "recall@50", "mrr@10"]
+
+    - id: "C-MTEB/DuRetrieval"
+      role: primary
+      size: 4000
+      why: "query 来自百度真实用户提问，最接近真实查询分布"
+
+    - id: "C-MTEB/EcomRetrieval"
+      role: control
+      size: 1000
+      why: >
+        句级关键词匹配场景，BM25 应占优。
+        用途是"反向验证"——确认哪些场景确实不需要向量，
+        支撑 M2 的停级判定（archive/eval-datasets.md §2.1）。
+
+    - id: "DuReader-Retrieval"
+      role: scale_stress         # 可选子实验，时间紧可后置
+      corpus_sizes: [100000, 500000, 2000000]   # 三档截取
+      queries_sample: 500
+      seed: 42
+      why: >
+        测 recall@50 随语料规模的衰减曲线，
+        为"语料变大后直读为什么不行"提供外部佐证。
+
+  # ── 参考基线（C-MTEB 已发表 NDCG@10）──────
+  reference_baselines:
+    note: "用于判断'好'的量级，不是本项目门禁"
+    bge_large_zh: {T2Retrieval: 84.82, MMarcoRetrieval: 81.28, DuRetrieval: 86.94}
+    openai_ada_002: {T2Retrieval: 69.14, MMarcoRetrieval: 69.86, DuRetrieval: 71.17}
+
+  # ── 对照实验组（一次只改一处）───────────────
+  # G 轮次定义与 archive/primer.md §一 一致：
+  # G0 = 文档级 BM25（现状），G1 = 分块级 BM25（已完成），
+  # G2 = 向量重跑，G3 = 混合（RRF）重跑
+  runs:
+    - id: G0
+      desc: "BM25 文档级（现状基线，已完成，见 results/g0-baseline.md）"
+    - id: G1
+      desc: "BM25 分块级（已完成，见 results/g1-chunked.md）"
+    - id: G2
+      desc: "纯向量重跑（M2）"
+    - id: G3
+      desc: "BM25 + 向量 RRF 混合重跑（M2，ranx 内置 RRF 可直接对照）"
+
+  # ── ⚠️ 生产代码行为修正（必读）──────────────
+  bm25_evaluation_mode:
+    bypass_threshold: true
+    reason: >
+      BM25Index.search() 有两重过滤会截断结果：
+      相对阈值 score >= max_score * min_score_ratio(0.3)
+      + 绝对阈值 score >= SCORE_THRESHOLD(0.5)。
+      这导致 top_k=50 常只返回个位数结果，recall@50 被严重低估——
+      测到的是"阈值行为"而非"检索能力"。
+      评测时由 l1_eval.py 将两者置 0，取完整排序。
+    known_limitation: >
+      绕过阈值后，scores 仍只包含"至少命中一个查询 token"的文档。
+      BM25 无法召回零词重叠的文档，这是词法检索的固有上限，
+      也是 G2 向量的增量空间所在。
+
+# ════════════════════════════════════════════
+# L2 · 端到端测试（M2 阶段启用）
+# ════════════════════════════════════════════
+# 注：L2 门禁值与 archive/milestones.md M2 验收第 3 条一致（原 5 条之一）
+l2:
+  tool: ragas
+  metrics:
+    - faithfulness        # 门禁 ≥0.85
+    - context_recall      # 门禁 ≥0.85
+    - context_precision   # 门禁 ≥0.70
+    - answer_relevancy
+  gates:
+    context_precision: 0.70
+    context_recall: 0.85
+    faithfulness: 0.85
+
+  datasets:
+    - id: "自建 60 题（S1-S4）"
+      role: primary
+      path: "questions.jsonl"      # rag-bench/ 下
+    - id: "CRUD-RAG / QA 1-doc + 幻觉修改"
+      role: supplementary          # 旁证，非门禁
+      why: >
+        幻觉修改（5,130 样本）是罕见的 Update 类任务，
+        天然验证 M2 增量索引（验收第 4 条）：增量索引失效则该项分数下降。
+      note: "只取数据与标注，不用官方 harness（依赖 Milvus-lite，架构冲突）"
+
+  # GaRAGe 思路：逐段落接地标注，抓 RAGAS 四指标抓不到的"静默失败"
+  # 自查项，非门禁
+  extra_metrics:
+    - name: passage_grounding_rate
+      desc: "答案所依据段落被标注为 evidence_correct 的比例"
+      source: "GaRAGe 标注思路（archive/eval-datasets.md §2.4）"
+
+  judge_protocol:
+    swap_answer_order: true     # 防 position bias
+    human_calibration_ratio: 0.20
+    fixed_model_version: true
+
+# ════════════════════════════════════════════
+# L3 · 系统对照（无公开基准，全部自建）
+# ════════════════════════════════════════════
+l3:
+  tool: "自建脚本（run_g0.py / run_g1.py 已产出）"
+  note: "公开基准无法提供以下指标，这是本项目的差异化证据"
+  metrics:
+    - token_compression_ratio   # 基线输入 token ÷ RAG 输入 token（G1 实测 −92.6%）
+    - traceability_rate         # 答案带 [slug#section] 引用的比例，M1 门禁 ≥70%（实测 82%）
+    - truncation_rate           # C3 下输入超窗口比例
+    - cost_per_1k_queries       # 货币化
+    - context_rot_recall        # Agent 20 轮后末轮正确率
+
+  corpora:
+    C1: {desc: "官方文档站全量", target_tokens: "20-40K"}
+    C2: {desc: "C1 + 仓库通用文档", target_tokens: "50-80K"}
+    C3: {desc: "C2 + 公开填充，拼接长文档", target_tokens: ">=200K", actual: "52 页 / 208K est tokens"}
+
+# ════════════════════════════════════════════
+# 不做（范围纪律）
+# ════════════════════════════════════════════
+excluded:
+  - id: "BEIR / HotpotQA / FRAMES 英文语料"
+    reason: "只借方法论（评测协议、oracle vs achieved 归因、失败模式分类），不跑语料"
+  - id: "C-MTEB 全套 35 个数据集"
+    reason: "只取检索/重排子集（§2.1 三个检索集 + M5 重排子集）"
+  - id: "EnterpriseRAG-Bench"
+    reason: ">50 万文档，与单机个人运行时架构纪律冲突"
+  - id: "LongBench v2 / BABILong"
+    reason: "模型评测非系统验收，成本高、语料无关（archive/test-plan.md §3.3）"
