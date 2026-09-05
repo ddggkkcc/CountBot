@@ -346,6 +346,41 @@ class TestRagAskGrading:
         assert len(provider.calls) == 0
 
 
+class TestEmptyGenerationRecovery:
+    """空 content 防御：推理模型可能把 max_tokens 耗在思考阶段导致空输出，
+    生产 bug（Phase 1 任务 4 顺手修）：直接返回空串 → 加预算重试一次，
+    仍为空则回退块级搜索，绝不返回空串。"""
+
+    def test_empty_content_retries_with_larger_budget(self, wiki_dir, rag_env, monkeypatch):
+        provider = ScriptedProvider([
+            '{"grade": "all", "relevant": [1, 2]}',
+            "",                       # 第一次生成：思考耗尽 → 空
+            "ANSWER_RECOVERED",       # 加预算重试成功
+        ])
+        _install_provider(monkeypatch, provider)
+        tool = WikiTool(wiki_dir)
+
+        out = asyncio.run(tool._handle_ask("如何用 Docker 部署"))
+
+        assert out == "ANSWER_RECOVERED"
+        assert len(provider.calls) == 3  # 评估 + 生成 + 重试
+
+    def test_empty_twice_falls_back_to_chunk_search(self, wiki_dir, rag_env, monkeypatch):
+        provider = ScriptedProvider([
+            '{"grade": "all", "relevant": [1, 2]}',
+            "",   # 生成空
+            "",   # 重试仍空 → 回退块级搜索
+        ])
+        _install_provider(monkeypatch, provider)
+        tool = WikiTool(wiki_dir)
+
+        out = asyncio.run(tool._handle_ask("如何用 Docker 部署"))
+
+        assert out  # 绝不返回空串
+        assert "matching sections" in out
+        assert len(provider.calls) == 3
+
+
 class TestParseGrade:
     """_parse_grade：LLM 输出 → (grade, relevant_ids) 的解析契约"""
 

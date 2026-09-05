@@ -29,6 +29,11 @@ except ImportError:  # 纯 Python 兜底：不安装 numpy 只是慢，不是坏
 from loguru import logger
 
 
+def default_index_filename() -> str:
+    """向量索引默认文件名：numpy 可用 → .npz，否则 .json（service 层持久化用）"""
+    return "vector_index.npz" if _np is not None else "vector_index.json"
+
+
 class VectorStore:
     """以 chunk_id 为键的稠密向量池（余弦相似度 top-k 检索）"""
 
@@ -37,6 +42,10 @@ class VectorStore:
         self._ids: List[str] = []
         self._vecs: List[List[float]] = []
         self._pos: Dict[str, int] = {}  # chunk_id -> 下标（add/remove O(1) 定位）
+        # 调用方元数据（如 slug→mtime 过期追踪），随索引一并持久化。
+        # chunk_id 在内容变更时可能复用（同 slug#section），仅凭 id 存在
+        # 判断"向量未过期"不可靠，过期判定由调用方经 meta 完成。
+        self.meta: Dict[str, object] = {}
 
     def __len__(self) -> int:
         return len(self._ids)
@@ -138,9 +147,11 @@ class VectorStore:
                 p,
                 chunk_ids=_np.array(self._ids),
                 vectors=_np.asarray(self._vecs, dtype=_np.float32),
+                meta=_np.array([json.dumps(self.meta, ensure_ascii=False)]),
             )
         else:
-            data = {"dim": self.dim, "chunk_ids": self._ids, "vectors": self._vecs}
+            data = {"dim": self.dim, "chunk_ids": self._ids,
+                    "vectors": self._vecs, "meta": self.meta}
             p.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
     def load_from_file(self, path: str) -> bool:
@@ -159,21 +170,25 @@ class VectorStore:
                     with _np.load(p, allow_pickle=False) as z:
                         ids = z["chunk_ids"].tolist()
                         vecs = z["vectors"].tolist()
-                    self._reset(ids, vecs)
+                        meta = (json.loads(z["meta"].tolist()[0])
+                                if "meta" in z.files else {})
+                    self._reset(ids, vecs, meta)
                     return True
                 except Exception:
                     pass  # 不是 npz，落到 json
             data = json.loads(p.read_text(encoding="utf-8"))
-            self._reset(data["chunk_ids"], data["vectors"])
+            self._reset(data["chunk_ids"], data["vectors"], data.get("meta", {}))
             return True
         except Exception as e:
             logger.warning(f"向量索引加载失败，将重建：{p}（{e}）")
             return False
 
-    def _reset(self, ids: List[str], vecs: List[List[float]]) -> None:
+    def _reset(self, ids: List[str], vecs: List[List[float]],
+               meta: Optional[Dict[str, object]] = None) -> None:
         if len(ids) != len(vecs):
             raise ValueError(f"索引数据不一致：{len(ids)} ids vs {len(vecs)} vectors")
         self._ids = list(ids)
         self._vecs = [[float(x) for x in v] for v in vecs]
         self._pos = {cid: i for i, cid in enumerate(self._ids)}
         self.dim = len(self._vecs[0]) if self._vecs else None
+        self.meta = dict(meta or {})

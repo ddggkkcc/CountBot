@@ -414,7 +414,14 @@ class WikiTool(Tool):
 
 如果知识库中没有相关内容，请如实告知。"""
         try:
-            return await provider.chat_completion(prompt, max_tokens=2000, temperature=0.3)
+            answer = await provider.chat_completion(prompt, max_tokens=2000, temperature=0.3)
+            if not answer.strip():
+                # 推理模型可能把 max_tokens 全部耗在思考阶段，content 为空：
+                # 加大预算重试一次，仍为空则回退块级搜索结果（绝不返回空串）
+                logger.warning("Empty generation content (reasoning exhausted "
+                               "max_tokens?), retrying with larger budget")
+                answer = await provider.chat_completion(prompt, max_tokens=4000, temperature=0.3)
+            return answer if answer.strip() else self._rag_search(question, top_k=6)
         except Exception:
             return self._rag_search(question, top_k=6)
 
