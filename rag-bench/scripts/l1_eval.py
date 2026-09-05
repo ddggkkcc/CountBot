@@ -282,6 +282,65 @@ def build_chunk_run(
     return run
 
 
+def build_vector_run(
+    corpus_dir: str | Path,
+    queries: dict[str, str],
+    mode: str = "hybrid",
+    top_k: int = 50,
+    name: str | None = None,
+) -> Run:
+    """G2 纯向量 / G3 混合（RRF）块级 run（需 COUNTBOT_RAG_EMBEDDING_* 环境变量）
+
+    嵌入文本组装与生产一致（service.chunk_embedding_text），保证向量空间可比。
+    G2 = Dense 单通道排序（停级条款的判定依据）；
+    G3 = HybridRetriever 双通道融合（与生产 search_chunks 同一条代码路径）。
+    """
+    import asyncio
+
+    if str(REPO_ROOT) not in sys.path:
+        sys.path.insert(0, str(REPO_ROOT))
+    from backend.modules.rag.embeddings import build_embedding_client
+    from backend.modules.rag.retriever import HybridRetriever
+    from backend.modules.rag.service import chunk_embedding_text
+    from backend.modules.rag.stores import VectorStore
+
+    if mode not in ("dense", "hybrid"):
+        sys.exit(f"mode 必须是 dense|hybrid，收到：{mode}")
+
+    embedder = build_embedding_client()
+    if embedder is None:
+        sys.exit("未配置 COUNTBOT_RAG_EMBEDDING_BASE_URL / API_KEY，无法构建向量 run")
+
+    store = build_chunk_index(corpus_dir)
+    check_jieba()
+
+    # 全量块嵌入（EmbeddingClient 内部按 ≤16 切批）
+    pairs = [(cid, chunk_embedding_text(c))
+             for cid in store.all_chunk_ids() if (c := store.get_chunk(cid))]
+    print(f"[vector-run] embedding {len(pairs)} chunks ({mode})...")
+    vectors = asyncio.run(embedder.embed_texts([t for _, t in pairs]))
+
+    vs = VectorStore()
+    for (cid, _), vec in zip(pairs, vectors):
+        vs.add(cid, vec)
+
+    run = Run()
+    run.name = name or (f"G{2 if mode == 'dense' else 3}-{'dense' if mode == 'dense' else 'hybrid'}")
+    if mode == "dense":
+        for qid, query in queries.items():
+            qvec = asyncio.run(embedder.embed_query(query))
+            for cid, score in vs.search(qvec, top_k=top_k):
+                run.add_score(str(qid), str(cid), float(score))
+    else:
+        retriever = HybridRetriever(store, vs, embedder, candidate_k=top_k)
+        for qid, query in queries.items():
+            results = asyncio.run(retriever.search(query, top_k=top_k))
+            for rank, c in enumerate(results, 1):
+                # search 已按融合分降序，转成递减分数保持名次
+                run.add_score(str(qid), str(c["chunk_id"]), float(top_k - rank))
+    return run
+
+
 # ────────────────────────────────────────────
 # 评测与对比
 # ────────────────────────────────────────────
@@ -454,6 +513,10 @@ def main() -> int:
     parser.add_argument("--chunk-run", metavar="TAG",
                         help="块级模式：用 ChunkedBM25Index（--corpus）对自建 60 题生成 run 并评测，"
                              "qrels 由 questions.jsonl 自动构造")
+    parser.add_argument("--dense-run", metavar="TAG",
+                        help="G2 纯向量 run（需 COUNTBOT_RAG_EMBEDDING_* 环境变量），停级条款判定用")
+    parser.add_argument("--hybrid-run", metavar="TAG",
+                        help="G3 混合 run（BM25+Dense RRF，生产同路径），Phase 1 门禁用")
     parser.add_argument("--corpus", default=str(BENCH / "corpus"),
                         help="块级模式语料目录（含 manifest.json），默认 rag-bench/corpus")
     parser.add_argument("--questions-jsonl", default=str(BENCH / "questions.jsonl"),
@@ -477,7 +540,9 @@ def main() -> int:
     runs = parse_run_specs(args.run)
 
     qrels = None
-    if args.chunk_run:
+    vector_mode = args.dense_run or args.hybrid_run
+    corpus_mode = args.chunk_run or vector_mode
+    if corpus_mode:
         store = build_chunk_index(args.corpus)
         questions = load_questions_jsonl(args.questions_jsonl)
         # 检索指标只评正样本：negative 题无 relevant chunk（拒答归 run_crag_eval.py）
@@ -485,18 +550,22 @@ def main() -> int:
         qrels = build_qrels_from_questions(questions, store)
         if args.write_qrels:
             write_qrels_trec(qrels, args.write_qrels)
-        runs[args.chunk_run] = build_chunk_run(
-            store,
-            queries,
-            top_k=args.top_k,
-            bypass_threshold=not args.keep_threshold,
-            name=args.chunk_run,
-        )
+        if args.chunk_run:
+            runs[args.chunk_run] = build_chunk_run(
+                store, queries, top_k=args.top_k,
+                bypass_threshold=not args.keep_threshold, name=args.chunk_run,
+            )
+        if args.dense_run:
+            runs[args.dense_run] = build_vector_run(
+                args.corpus, queries, mode="dense", top_k=args.top_k, name=args.dense_run)
+        if args.hybrid_run:
+            runs[args.hybrid_run] = build_vector_run(
+                args.corpus, queries, mode="hybrid", top_k=args.top_k, name=args.hybrid_run)
     elif args.qrels:
         qrels = load_qrels(args.qrels)
 
     if qrels is None:
-        parser.error("需要 --qrels、--chunk-run 或 --self-test 之一")
+        parser.error("需要 --qrels、--chunk-run / --dense-run / --hybrid-run 或 --self-test 之一")
 
     if args.bm25_corpus:
         if not args.queries:
@@ -516,7 +585,7 @@ def main() -> int:
     metrics = (
         [m.strip() for m in args.metrics.split(",") if m.strip()]
         if args.metrics
-        else (CHUNK_METRICS if args.chunk_run else DEFAULT_METRICS)
+        else (CHUNK_METRICS if corpus_mode else DEFAULT_METRICS)
     )
     summary = summarize(qrels, runs, metrics)
 

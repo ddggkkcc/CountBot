@@ -44,6 +44,16 @@ def _run_coro(coro):
         return pool.submit(asyncio.run, coro).result()
 
 
+def chunk_embedding_text(chunk: dict) -> str:
+    """块的嵌入文本 = 「文档标题 › 节路径 + 块正文」
+
+    与 BM25 的标题加权（title ×3）对齐，让 Dense 通道也吃到标题上下文。
+    独立成函数：评测脚本（l1_eval.py 的 G2/G3 run）必须与生产用同一组装，
+    否则向量空间不可比。
+    """
+    return f"{chunk['doc_title']} › {chunk.get('heading_path', chunk['section'])}\n{chunk['content']}"
+
+
 class RagService:
     """分块检索服务（包装 WikiService）"""
 
@@ -111,10 +121,7 @@ class RagService:
         chunks = [c for c in (self._store.get_chunk(cid) for cid in chunk_ids) if c]
         if not chunks:
             return 0
-        texts = [
-            f"{c['doc_title']} › {c.get('heading_path', c['section'])}\n{c['content']}"
-            for c in chunks
-        ]
+        texts = [chunk_embedding_text(c) for c in chunks]
         try:
             vectors = _run_coro(self._embedder.embed_texts(texts))
         except Exception as e:
