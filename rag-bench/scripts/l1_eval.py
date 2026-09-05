@@ -341,6 +341,80 @@ def build_vector_run(
     return run
 
 
+def save_runs_trec(runs: dict[str, Run], out_dir: Path) -> None:
+    """把各 run 落盘为 TREC 格式（qid Q0 docid rank score runtag）
+
+    run 只存在于内存，评测进程退出即丢；落盘后任何口径的事后分析
+    （按题型/文档子集切分）都能免重嵌重跑直接进行。
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for tag, run in runs.items():
+        lines = []
+        for qid in run.run:
+            scored = sorted(run.run[qid].items(), key=lambda kv: kv[1], reverse=True)
+            for rank, (doc, score) in enumerate(scored, 1):
+                lines.append(f"{qid} Q0 {doc} {rank} {score:.6f} {run.name}")
+        path = out_dir / f"{tag}.trec"
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        print(f"[runs] saved {path} ({len(lines)} lines)")
+
+
+def per_type_summary(qrels: Qrels, runs: dict[str, Run], qtype_map: dict[str, str]) -> dict:
+    """按题型分组统计 hit_rate@6 / mrr@6（仅正样本题型）
+
+    ranx 整表 compare 无法按 qid 子集切分，这里手工实现 top-6 判定：
+    题内相关块 = qrels 中该 qid 下 grade>0 的 doc（块级 qrels 由题目构造，
+    正样本每类型必有相关块，grade 均 1）。
+    返回值 {type: {tag: {n, hit_rate@6, mrr@6}}}。
+    """
+    types = sorted({t for t in qtype_map.values() if t != "negative"})
+    out: dict = {}
+    for t in types:
+        qids = [q for q, tt in qtype_map.items() if tt == t]
+        out[t] = {}
+        for tag, run in runs.items():
+            hits = 0
+            rr_sum = 0.0
+            for qid in qids:
+                relevant = {d for d, g in qrels.qrels.get(qid, {}).items() if g and g > 0}
+                ranked = [d for d, _ in sorted(run.run[qid].items(),
+                                               key=lambda kv: kv[1], reverse=True)][:6]
+                hit = next((i for i, d in enumerate(ranked, 1) if d in relevant), None)
+                if hit is not None:
+                    hits += 1
+                    rr_sum += 1.0 / hit
+            n = len(qids)
+            out[t][tag] = {"n": n,
+                           "hit_rate@6": (hits / n) if n else 0.0,
+                           "mrr@6": (rr_sum / n) if n else 0.0}
+    return out
+
+
+def print_per_type(per_type: dict, runs: dict[str, Run]) -> None:
+    """打印题型分表：每个题型一行一个 run 的 hit_rate@6/mrr@6"""
+    tags = list(runs)
+    if len(tags) == 1:
+        header = "| 题型 | n | hit_rate@6 | mrr@6 |"
+        sep = "|---|---|---|---|"
+        for t, rows in per_type.items():
+            r = rows[tags[0]]
+            print(header)
+            print(sep)
+            print(f"| {t} | {r['n']} | {r['hit_rate@6']:.4f} | {r['mrr@6']:.4f} |")
+        return
+    header = "| run | " + " | ".join(t for t in per_type) + " |"
+    sep = "|" + "---|" * (len(per_type) + 1)
+    print("\n按题型分表（hit_rate@6，括号内 mrr@6）：")
+    print(header)
+    print(sep)
+    for tag in tags:
+        cells = []
+        for t, rows in per_type.items():
+            r = rows[tag]
+            cells.append(f"{r['hit_rate@6']:.4f} ({r['mrr@6']:.4f})")
+        print(f"| {tag} | " + " | ".join(cells) + " |")
+
+
 # ────────────────────────────────────────────
 # 评测与对比
 # ────────────────────────────────────────────
@@ -523,6 +597,8 @@ def main() -> int:
                         help="自建题目文件，默认 rag-bench/questions.jsonl")
     parser.add_argument("--write-qrels", metavar="PATH",
                         help="把块级 qrels 写成 TREC 文件（供复现与其他 G 轮次对照）")
+    parser.add_argument("--write-runs", metavar="DIR",
+                        help="把各 run 落盘为 TREC 文件到 DIR（事后按题型/子集分析的免重嵌前提）")
     parser.add_argument("--top-k", type=int, default=50)
     parser.add_argument("--keep-threshold", action="store_true",
                         help="保留 BM25 内置阈值（默认绕过，详见 build_bm25_run 文档字符串）")
@@ -540,6 +616,7 @@ def main() -> int:
     runs = parse_run_specs(args.run)
 
     qrels = None
+    qtype_map = None
     vector_mode = args.dense_run or args.hybrid_run
     corpus_mode = args.chunk_run or vector_mode
     if corpus_mode:
@@ -547,6 +624,7 @@ def main() -> int:
         questions = load_questions_jsonl(args.questions_jsonl)
         # 检索指标只评正样本：negative 题无 relevant chunk（拒答归 run_crag_eval.py）
         queries = {q["id"]: q["question"] for q in questions if q["type"] != "negative"}
+        qtype_map = {q["id"]: q["type"] for q in questions}
         qrels = build_qrels_from_questions(questions, store)
         if args.write_qrels:
             write_qrels_trec(qrels, args.write_qrels)
@@ -593,6 +671,13 @@ def main() -> int:
     if args.baseline and args.baseline in runs and len(runs) > 1:
         others = [t for t in runs if t != args.baseline]
         diff = per_query_diff(qrels, runs[args.baseline], runs[others[0]], metrics)
+
+    if args.write_runs:
+        save_runs_trec(runs, Path(args.write_runs))
+
+    if qtype_map and len(runs) >= 2:
+        per_type = per_type_summary(qrels, runs, qtype_map)
+        print_per_type(per_type, runs)
 
     write_report(Path(args.out), summary, diff, metrics)
     return 0
