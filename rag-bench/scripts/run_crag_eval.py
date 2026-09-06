@@ -86,7 +86,10 @@ class SimpleProvider:
 
     def __init__(self, base_url: str, api_key: str, model: str):
         from openai import AsyncOpenAI
-        self._client = AsyncOpenAI(base_url=base_url, api_key=api_key)
+        # 显式超时 + 限制重试：无超时挂起的代价是整轮评测（60 题已跑完的部分
+        # 全部作废）——实测过一次连接半开导致进程挂起 2 小时无进展。
+        self._client = AsyncOpenAI(base_url=base_url, api_key=api_key,
+                                   timeout=120.0, max_retries=1)
         self._model = model
         self.calls = 0
         self.tokens_in = 0
@@ -325,6 +328,8 @@ async def main():
     ap.add_argument("--judge-model", default=None,
                     help="judge 用不同模型（防同模型自评偏好）；缺省同 --model")
     ap.add_argument("--out", default=str(BENCH / "results/crag-detail.json"))
+    ap.add_argument("--questions-jsonl", default=str(BENCH / "questions.jsonl"),
+                    help="题目文件（默认 questions.jsonl；口语集等独立口径用）")
     ap.add_argument("--limit", type=int, default=0, help="只跑前 N 题（调试用）")
     ap.add_argument("--no-judge", action="store_true",
                     help="跳过 judge，仅执行系统 + 关键词判定（冒烟用）")
@@ -351,7 +356,7 @@ async def main():
         tool = WikiTool(Path(td))
 
         questions = [json.loads(l) for l in
-                     (BENCH / "questions.jsonl").read_text(encoding="utf-8").splitlines()
+                     Path(args.questions_jsonl).read_text(encoding="utf-8").splitlines()
                      if l.strip()]
         if args.limit:
             questions = questions[:args.limit]

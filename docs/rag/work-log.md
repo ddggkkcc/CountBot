@@ -108,6 +108,38 @@
 
 **下一步（P2 收尾项，可交给开发窗口）**：把 grader 偏置从"宁可生成"调回"证据不足则拒答"，对事实/数字类（needle）问题要求"答不出具体事实即判 none"；重跑 60 题回归，确认误拒答与错误作答同时收敛。这正是 v2 judge 五分类的价值——二值指标（answered / refused）永远看不到这个权衡。
 
+**口语集（30 题 Fuzzy）三档完整证据（2026-09-07，`questions-fuzzy.jsonl` / `results/l1-fuzzy-bge/` / `results/crag-detail-fuzzy-*.json`）**：
+
+构造动机：响应上节 3c 的配比缺口（术语集语义题仅 ~20%），把"语义占比"推到 100% 模拟真实用户问法——**术语集是开发者视角，口语集才是用户视角**。
+
+检索层（L1，BGE-M3 统一口径）：
+
+| 口语 30 题 | G1 BM25 | G3 混合 | P2 混合+重排 |
+|---|---|---|---|
+| **Hit@6** | 0.3333 | 0.7000 | **0.8333** |
+| **MRR@6** | 0.1867 | 0.4300 | **0.5194** |
+| Recall@6 | 0.0158 | 0.0415 | 0.0701 |
+
+端到端（v2 judge，pairwise 对照口语集 G1 基线）：
+
+| 口语 30 题 | G1 | P2 |
+|---|---|---|
+| correct | 3 | **12** |
+| partial | 7 | 13 |
+| **refused** | **17（57%）** | **1（3%）** |
+| wrong / hallucinated | 0 / 2 | 2 / 2 |
+| 质量通过 | 10/30（33%） | **25/30（83%）** |
+| 带引用 | 10 | 24 |
+| 误拒答归因 | retrieval_miss 14 + grader_error 3 | grader_error 1（QF-28） |
+| 系统调用/题 | 2.67 | 2.13 |
+| **pairwise vs G1** | — | **win 21 / loss 7 / tie 2** |
+
+**这是整个项目最有说服力的一组数字**：同一批口语提问下，词法路径 57% 直接拒答、只有 3 题答对；混合+重排把拒答压到 1 题、质量通过 33%→83%、pairwise 净赢 +14。对照术语集上"混合仅 +4pp"——**收益大小取决于查询分布，术语集的开发者视角严重低估了 RAG 升级的真实价值**。
+
+两个诚实回退（记录不藏）：
+1. **BGE-M3 在口语集上弱于 qwen3-embedding-8b**：混合 G3 的 Hit@6 0.70（BGE-M3）vs 0.80（qwen3-8b，同集早期口径），cross_doc 0.80 vs 0.93、needle 0.50 vs 0.60——**嵌入模型与查询分布存在交互**，术语集上的选型结论不能无条件外推到口语分布。
+2. **P2 在 single_doc 上回退**（G3 0.80 → G4 0.60）：口语化措辞（如"拧哪个旋钮管它脑洞大小"）让 cross-encoder 排错了序；同时 needle 大涨（0.50→0.90，模糊指代被精排救回）。净 +13pp，但回退要留档——这是 Phase 2.5 可做的"口语查询改写前置"线索。
+
 ---
 
 ## 3. 关键决策记录（ADR 精简版）
@@ -167,6 +199,7 @@ v1 的问题：拒答判定靠关键词匹配（换措辞即失效）、`expecte
 | judge 模型/数据集版本漂移 | 跨版本分数不可比 | provenance 必填字段（judge 版本 / 数据集版本 / seed / 日期） |
 | 推理型模型（deepseek-v4-pro）当 judge，思考计入 max_tokens | 300 预算全被思考耗尽（finish_reason=length、content 为空）→ judge 全部回退关键词 | judge/pairwise 的 max_tokens 提至 2500；换 judge 模型时先冒烟验证 |
 | max_tokens=2500 仍偶发不够（L2 混合验收的 S4-06/S4-08） | verdict=unknown 回退关键词，负样本"漏拒"假象（答案实为合格软拒答） | judge fallback 率应进 summary 监控；后续识别 finish_reason=length 做重试或加预算 |
+| 评测脚本 HTTP 调用无读超时 | 连接半开 → 进程挂起 2 小时无进展（CPU 15 秒/2 小时，无任何外部连接），**已跑完的 20 题全部作废** | `SimpleProvider` 加 `timeout=120.0, max_retries=1`；评测脚本必须有超时——挂起的代价是整轮评测而非一次重试延迟 |
 | slug 归一化不一致（`core/memory` vs `core__memory`） | retrieval_hit 恒为 N，归因表全错 | expected_slugs 与语料构建做同样的 `/`→`__` 替换 |
 | 评测集标注漂移（S1-01：标注写 JSON、语料是行式 MEMORY.md） | judge 判"幻觉"但实为标注错 | v2 judge 跑通即抓到 1 处；标注须对照语料核（retrieval_hit=Y 却被判 hallucinated/wrong 的题是筛查线索） |
 | 生成层偶发空回复（~2-3%，跨 run 随机分布：v1 的 S2-11 / v2 的 S1-01、S1-14） | v1 关键词判定把空回答算作"answered"，**生产 bug 被评测口径掩盖** | v2 judge 暴露（判"系统回答为空"）；生产侧待修：`_generate_from_chunks` 空 content 应重试或回退 `_rag_search`，现仅异常才回退 |

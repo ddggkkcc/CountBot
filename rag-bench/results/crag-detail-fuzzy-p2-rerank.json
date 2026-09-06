@@ -1,0 +1,1043 @@
+{
+ "summary": {
+  "model": "deepseek-v4-flash",
+  "judge_model": "deepseek-v4-pro",
+  "llm_calls_total": 64,
+  "judge_calls": 30,
+  "negative": {
+   "n": 0,
+   "refused": 0,
+   "hallucinated": 0,
+   "refusal_rate": null,
+   "note": "拒答率 = 负样本被判 refused 的比例（judge 口径），期望 10/10"
+  },
+  "positive": {
+   "n": 30,
+   "answered": 29,
+   "verdicts": {
+    "correct": 12,
+    "partial": 13,
+    "wrong": 2,
+    "refused": 1,
+    "hallucinated": 2
+   },
+   "quality_pass": 25,
+   "with_citation": 24,
+   "misrefusal_attribution": {
+    "retrieval_miss": [],
+    "grader_error": [
+     "QF-28"
+    ],
+    "no_signal": []
+   },
+   "note": "误拒答归因：retrieval_miss=第一次检索未召回（检索层问题），grader_error=检索已命中仍拒答（编排层问题）"
+  },
+  "judge_keyword_agreement": 0.9333,
+  "judge_keyword_agreement_note": "judge 与关键词拒答判定的一致率；显著低于 1.0 时优先排查 judge prompt 而非系统行为"
+ },
+ "pairwise": {
+  "baseline": "../results/crag-detail-fuzzy-g1-baseline.json",
+  "note": "换序双判一致才计票，不一致记 tie（防 position bias 的保守口径）",
+  "win": 21,
+  "loss": 7,
+  "tie": 2,
+  "skipped": 0,
+  "detail": [
+   {
+    "id": "QF-1",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-2",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-3",
+    "type": "cross_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "QF-4",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-5",
+    "type": "cross_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "QF-6",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-7",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-8",
+    "type": "cross_doc",
+    "outcome": "tie",
+    "judge_a_first": "A",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "QF-9",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-10",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-11",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-12",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-13",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-14",
+    "type": "cross_doc",
+    "outcome": "tie",
+    "judge_a_first": "A",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "QF-15",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-16",
+    "type": "needle",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-17",
+    "type": "needle",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "QF-18",
+    "type": "needle",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-19",
+    "type": "needle",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-20",
+    "type": "needle",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-21",
+    "type": "needle",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-22",
+    "type": "needle",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "QF-23",
+    "type": "needle",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-24",
+    "type": "needle",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-25",
+    "type": "needle",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "QF-26",
+    "type": "single_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-27",
+    "type": "single_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "QF-28",
+    "type": "single_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "QF-29",
+    "type": "single_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "QF-30",
+    "type": "single_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   }
+  ]
+ },
+ "detail": [
+  {
+   "id": "QF-1",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "我想让它到点自己给我推消息，不用我天天催着问，这个要怎么弄？还有它怎么知道该发到哪个聊天软件上？",
+   "expected_points": [
+    "定时任务支持 Cron 表达式（如 0 8 * * *）与单次任务",
+    "任务配置里指定输出到哪些渠道（target_channels）",
+    "可通过技能对话创建或直接调用 API 创建"
+   ],
+   "answer": "要实现“到点自动推送、不用你催”，可以用 **定时任务（Cron）** 功能。推荐方式是在 Web UI 中使用 `cron-manager` 技能，直接告诉它触发时间和推送内容，例如：\n\n> “请帮我创建一个定时任务，每天早上 8 点发送新闻摘要到 Telegram”  \n> [core__cron#1-通过技能管理-推荐]\n\n这样 Agent 会创建任务并加入调度器，到点后自动运行。\n\n关于“它怎么知道发到哪个聊天软件”：**需要在指令中明确指定渠道**。因为 CountBot 支持多渠道接入，比如飞书群、Telegram、QQ、网页端，早报可以推送到你最常用的平台，但前提是你告诉它“发到哪里”。示例中把“到 Telegram”写在请求里，Agent 就会投递到对应平台。  \n[scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧#技巧四-多渠道推送]\n\n另外，早报这类场景本身就是“被动接收”的场景——Agent 固定时间主动推送，用户不需要每天发起对话；但内容生成后需要投递到指定渠道，所以**渠道信息必须由你在创建任务时给出**，而不是 Agent 自己猜测。  \n[scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧#场景画像]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "getting-started__ChannelConfig",
+    "scenarios__帮我搜一下最近AI有什么新动态：多源信息聚合的场景与检索技巧",
+    "scenarios__帮我盯着这件事：定时监控与主动提醒的场景设计与自动化技巧",
+    "scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "定时任务支持通过技能对话创建",
+    "任务配置里指定输出渠道"
+   ],
+   "reason": "回答了通过技能对话创建定时任务和指定推送渠道，但未提及 Cron 表达式/单次任务及直接调用 API 创建等要点。"
+  },
+  {
+   "id": "QF-2",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "我最近要换台新电脑接着用，之前跟它聊的内容还有它记住我的那些事，能一起搬过去吗？动手前得先做点什么？",
+   "expected_points": [
+    "升级/迁移前先备份（workspace 目录、数据库、记忆）",
+    "workspace 承载记忆与技能，整体迁移即可保留",
+    "数据兼容性说明：会话与记忆可保留"
+   ],
+   "answer": "可以。聊天内容和它记住你的事都保存在本地数据目录里，换新电脑时把数据文件一起拷走即可。\n\n动手前需要先停止正在运行的 CountBot，避免数据文件还在写入导致拷贝不完整或损坏（SQLite 并发写入容易锁库）。停止方式取决于你的运行方式：源码运行按 `Ctrl+C`，桌面版完全退出程序，systemd 部署执行 `sudo systemctl stop CountBot`。\n\n**需要备份/迁移的内容：**\n\n按照最小备份范围，至少要保留：\n\n- `workspace/`\n- `data/countbot.db`\n\n如果希望更稳妥，可以把整个 `data/` 目录和 `workspace/` 目录都完整备份，另外包括你自己维护的部署脚本或自定义配置文件。\n\n历史消息是从数据库加载的，记忆也会通过记忆系统写入（比如 `MEMORY.md` 或数据库），所以这些都在上述文件/目录里。复制到新电脑后，放到相同路径，再以相同版本启动即可。\n\n引用来源：\n- 更新前必须先做的事：[getting-started__update-guide#countbot-更新指南-源码覆盖-github-命令升级与桌面版更新-更新前必须先做的事]\n- 最小备份范围：[getting-started__update-guide#countbot-更新指南-源码覆盖-github-命令升级与桌面版更新-更新前必须先做的事-最小备份范围]\n- 历史消息从数据库加载：[advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-关键要点]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__agent-system-design-guide",
+    "advanced__http-flows__system-prompt-construction",
+    "core__memory",
+    "getting-started__update-guide",
+    "scenarios__帮我搜一下最近AI有什么新动态：多源信息聚合的场景与检索技巧"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "迁移前备份 workspace 目录、数据库、记忆",
+    "workspace 与数据文件整体迁移即可保留会话与记忆",
+    "数据兼容性说明：会话与记忆可保留"
+   ],
+   "reason": "系统回答覆盖了备份范围、迁移保留会话与记忆等参考要点，且未发现明显编造。"
+  },
+  {
+   "id": "QF-3",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "同事想用他自己的电脑打开我这边跑的页面来用，我得怎么设置？会不会变成谁都能进，要不要弄个登录密码什么的？",
+   "expected_points": [
+    "通过非本地 IP 访问时系统自动启用认证",
+    "管理员密码要求：至少 8 位，包含大写字母、小写字母和数字",
+    "本地 127.0.0.1 访问不受影响"
+   ],
+   "answer": "要让同事用他自己的电脑访问你本机运行的页面，**需要开启远程访问并完成初始管理员认证配置**。知识库中说明了相关机制：\n\n1. **启动时开启远程访问**：示例中通过设置 `COUNTBOT_HOST=0.0.0.0` 启动应用，并会输出一个 setup URL（如 `http://192.168.1.100:8000/setup/...`），同事可用浏览器访问该地址 [advanced__auth#远程访问认证-远程初始化-示例]。\n\n2. **首次必须设置管理员账号和密码**：首次访问会自动跳转到 `/first-setup` 页面，要求设置管理员用户名和密码（密码至少8位，且包含大写、小写、数字）。设置完成后会保存凭据并登录 [advanced__auth#远程访问认证-首次设置-首次设置页面][advanced__auth#远程访问认证-首次设置-设置流程]。\n\n3. **后续访问需要登录**：设置完成后，访问远程页面时若未登录，会重定向到 `/login` 页面，输入管理员凭据验证成功后才能进入 [advanced__auth#远程访问认证-登录系统-登录流程]。\n\n4. **不会“谁都能进”**：认证系统强制要求登录，密码在数据库中加密存储（bcrypt），首次设置完成后设置页面不再显示 [advanced__auth#远程访问认证-首次设置-安全机制]。同事需要你提供 setup URL 或最终登录地址，并由他输入你设置的管理员账号和密码才能访问。\n\n因此答案是：**需要先启动远程访问、完成首次管理员密码设置，并让同事通过登录页面认证后使用；不是完全公开的，密码保护是内建功能，必须设置。** 如果知识库中没有提到具体网络防火墙、端口转发等配置，那不属于当前知识范围。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__auth",
+    "getting-started__troubleshooting"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "管理员密码要求",
+    "远程访问需登录认证，不会谁都能进"
+   ],
+   "reason": "覆盖了远程访问需登录和密码复杂度要求，但未说明本地127.0.0.1访问不受影响。"
+  },
+  {
+   "id": "QF-4",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "听说我可以让它派个小帮手单独去跑腿干活，干完再回来跟我汇报，这一套是怎么运作的？",
+   "expected_points": [
+    "子代理是独立的一次性执行单元，有独立上下文",
+    "主对话派发任务，子代理执行完把结果回传主对话汇合",
+    "子代理最多迭代 15 轮"
+   ],
+   "answer": "这套机制对应的是知识库中“子代理系统”的**进度通知机制**。\n\n你可以通过 **spawn 工具**派一个“子代理”（小帮手）单独去执行任务；它在干活过程中以及干完回来时，会通过两条通道把进度和结果同步给你：\n\n- **TaskNotificationHandler**：专用于 spawn 工具，任务进行中会调用 `notify_tool_call` 发送“工具调用”通知，任务出结果后再调用 `notify_tool_result` 发送“工具结果与当前进度”通知。\n- **event_callback**：用于 workflow 系统，分别发送 `tool_call` 和 `tool_result` 事件，让整个工作流也能感知到子代理的执行状态。\n\n来源：`[advanced__agent-system-design-guide#代理系统设计指南-子代理系统设计-进度通知机制]`",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "advanced__professional-prompt-engineering",
+    "getting-started__quick-start-guide",
+    "scenarios__帮我做个网页然后上线：从需求描述到生产部署的完整话术"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "主对话派发任务",
+    "子代理执行后回传结果/通知"
+   ],
+   "reason": "回答说明了派发子代理执行并回传进度结果，但遗漏了独立上下文和最多迭代15轮等关键要点"
+  },
+  {
+   "id": "QF-5",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "好几个AI角色搭伙干活的时候，能不能让干粗活的用便宜点的脑子，管事儿的用好脑子？这个在哪配？",
+   "expected_points": [
+    "团队可配置专属模型（use_custom_model）",
+    "优先级：会话自定义 > 团队自定义 > 全局模型",
+    "团队模型配置保存在独立的 config 接口下"
+   ],
+   "answer": "根据现有知识库内容，**没有找到**“给不同AI角色分别配置不同价格/规格模型”的说明，也没有对应的配置入口。\n\n知识库中只提到：\n\n- CountBot 的“智能体团队”支持多种协作模式，并且团队是完整的多智能体工作流配置，包含“可选的团队专属模型配置”（来源：core__agent-teams#智能体团队）。\n- 在产品结构中提到支持 pipeline、graph、council 等协作模式（来源：index#countbot-当前产品结构-3-智能体团队）。\n\n但“团队专属模型配置”是否能让“干粗活的角色用便宜模型、管事的角色用好模型”，以及具体在哪里配置，知识库中没有进一步说明。建议你在实际产品中查看“团队专属模型配置”的具体选项，或咨询产品方确认。",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__prompt-optimization-guide",
+    "core__agent-teams",
+    "index",
+    "scenarios__帮我做个网页然后上线：从需求描述到生产部署的完整话术",
+    "scenarios__帮我搜一下最近AI有什么新动态：多源信息聚合的场景与检索技巧"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "团队可配置专属模型"
+   ],
+   "reason": "系统回答仅提到团队可选专属模型配置，但未覆盖模型优先级和独立config接口等关键要点。"
+  },
+  {
+   "id": "QF-6",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "我想从零教它一个新本事，都要建些什么文件放在哪？写好之后它自己能认出来吗，还是得重启？",
+   "expected_points": [
+    "技能放在 workspace/skills/<技能名>/ 独立目录",
+    "每个技能需要 SKILL.md（frontmatter 元数据 + 说明文档）",
+    "支持热加载，无需重启"
+   ],
+   "answer": "从知识库看，你想“从零教它一个新本事”，就是创建一个**自定义技能（Skill）**。\n\n### 需要建的文件和位置\n\n技能要放在工作空间下的 `workspace/skills/` 目录里，结构如下：\n\n```\nworkspace/skills/\n└── my-skill/              # 技能名称（小写，连字符分隔）\n    ├── SKILL.md           # 必需：技能文档\n    ├──",
+   "refused_keyword": false,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__professional-prompt-engineering",
+    "core__skills-creation",
+    "getting-started__installation",
+    "scenarios__帮我做个网页然后上线：从需求描述到生产部署的完整话术"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "技能放在 workspace/skills/<技能名>/ 独立目录",
+    "每个技能需要 SKILL.md"
+   ],
+   "reason": "覆盖了目录结构和 SKILL.md 必需，但未提及支持热加载无需重启"
+  },
+  {
+   "id": "QF-7",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "我在终端里装了个专门写代码的AI，CountBot 能不能直接使唤它帮我改代码？聊天的时候要怎么切过去？",
+   "expected_points": [
+    "支持接入外部编码工具（如 Claude Code/Codex）",
+    "聊天中用 /route 或 /coder 命令切换路由",
+    "切到编码工具处理的前提是已完成相关配置"
+   ],
+   "answer": "可以，但需要先配置好，并且聊天时的“切换”方式取决于你希望怎么路由。\n\n- CountBot 可以把外部编码 CLI（比如 Claude、Codex、OpenCode 这类终端里跑的写代码 AI）接进系统，作为“编码执行层”，用于承接改代码、调试、重构等任务。[core__external-coding-tools#外部编码工具]\n- 在渠道配置里，可通过 `routing_mode` 和 `external_coding_profile` 等设置决定消息如何路由。[getting-started__ChannelConfig#渠道配置-routing_mode-和-external_coding_profile-怎么生效-ai]\n\n至于聊天时怎么切过去：\n\n- 知识库提到了 `/route` 命令用于切换当前聊天路由模式。其中 `ai` 模式是：普通消息先进入 CountBot 主 Agent 流程，再由主模型决定是否调用工具、是否调度团队、是否转外部编码工具。[core__im-commands#im-命令-route-切换当前聊天路由模式-ai]\n- 所以在 `ai` 模式下，你不需要手动指定“去找那个写代码 AI”，直接在聊天里提出改代码需求，主 Agent 会在需要时自动调外部编码工具。\n- 如果你想让消息**直接**进入外部编码工具，而不是先经过主 Agent 判断，可以把它设置成某个 IM 渠道账号的默认路由或直通模式。文档提到：外部编码工具“可以直接作为某个 IM 渠道账号的默认目标”，并且产品结构中也写了“在 IM 渠道账号里设置 AI 模式或直通模式的默认路由”。[core__external-coding-tools#外部编码工具] [index#countbot-当前产品结构-5-外部编程工具]\n\n但知识库中**没有给出**在聊天界面里切换到“直通外部编码工具”的具体命令，只明确了 `/route` 命令和 `ai` 这种模式。若你想知道当前是否已处于可调度外部编码工具的状态，建议先确认渠道的 `routing_mode` 和 `external_coding_profile` 配置是否正确。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__prompt-optimization-guide",
+    "core__im-commands",
+    "getting-started__ChannelConfig",
+    "index",
+    "scenarios__帮我盯着这件事：定时监控与主动提醒的场景设计与自动化技巧"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "支持接入外部编码工具",
+    "切换前需完成配置",
+    "聊天中可用 /route 命令切换路由"
+   ],
+   "reason": "遗漏了 /coder 命令，聊天切换方式覆盖不完整"
+  },
+  {
+   "id": "QF-8",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "跟它在同一个窗口里唠特别久会怎么样？最早说过的那些话是被直接扔了，还是存到别的地方了？",
+   "expected_points": [
+    "会话历史有窗口限制",
+    "超过阈值（30 条消息 / 15000 字符）触发自动总结压缩",
+    "更早的内容以 auto-overflow 形式写入长期记忆"
+   ],
+   "answer": "在同一窗口里聊太久、超出窗口限制时，系统不会直接丢弃最早的话，而是先把它们**自动总结成记忆条目**保存到记忆系统（如 MEMORY.md），**然后才删除原始旧消息**，只保留窗口内的最近消息 [core__memory#记忆系统-自动总结] [advanced__http-api-deep-dive#http-api-深度解析-8-多轮对话和上下文管理-会话总结机制-滚动窗口溢出总结]。\n\n具体流程如下：\n\n- **检测溢出**：消息数超过 `max_history` 时触发总结。\n- **总结旧消息**：把超出窗口的最旧消息交给 LLM，提取有长期价值的信息（如用户偏好、关键事实），生成简洁摘要。\n- **写入记忆**：摘要以 `auto-overflow` 来源存入记忆系统 / MEMORY.md。\n- **删除旧消息**：从数据库中删除已被总结的原始消息，只保留最近的 `max_history` 条消息 [advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-历史消息限制-滚动窗口机制-滚动窗口流程] [advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-历史消息限制-滚动窗口机制-示例]。\n\n所以，最早的“原话”不会原样保留，而是“被总结成要点存到别处”，原文会被清理以保持上下文窗口轻量 [core__memory#记忆系统-自动总结]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "getting-started__configuration",
+    "index"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "会话历史有窗口限制",
+    "超出阈值触发自动总结压缩",
+    "更早内容以 auto-overflow 形式写入长期记忆"
+   ],
+   "reason": "核心机制已覆盖，但未提及具体阈值（30条消息/15000字符）。"
+  },
+  {
+   "id": "QF-9",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "它的回答是怎么做到一个字一个字往外蹦的？我在网页上看着和在别的接口调，用的是同一种推送方式吗？",
+   "expected_points": [
+    "HTTP 调用走 SSE 流式响应格式，逐段返回内容",
+    "网页端走 WebSocket（ws://…/ws/chat）实时推送",
+    "前端对收到的增量分片做渐进渲染"
+   ],
+   "answer": "它“一个字一个字蹦”，是因为服务端在返回回答时使用了**流式（Streaming）推送**：先不发送完整回复，而是把回复拆成多个很小的 `chunk`（消息块），每生成一部分就立即推送给客户端，客户端收到后马上显示，所以看起来像在逐字输出。\n\n但“网页上看到”和“在别的接口调用”很可能**不是同一种推送方式**：\n\n- **网页端**：知识库中说明网页端是通过 **WebSocket 实时推送**的，传输内容类似 `message_chunk`，例如连续收到：\n  ```\n  {\"type\": \"message_chunk\", \"content\": \"你\"}\n  {\"type\": \"message_chunk\", \"content\": \"好\"}\n  {\"type\": \"message_chunk\", \"content\": \"！\"}\n  ```\n  每一条都是一个增量块，收到后立刻渲染，于是看到逐字蹦出的效果。  \n  来源：[advanced__http-api-deep-dive#http-api-深度解析-7-websocket-实时通信-流式-chunk-推送-服务器推送格式](advanced__http-api-deep-dive#http-api-深度解析-7-websocket-实时通信-流式-chunk-推送-服务器推送格式)  \n  来源：[advanced__http-api-deep-dive#http-api-深度解析-7-websocket-实时通信-流式-chunk-推送-完整流式响应示例](advanced__http-api-deep-dive#http-api-深度解析-7-websocket-实时通信-流式-chunk-推送-完整流式响应示例)\n\n- **别的接口（例如 HTTP API 流式接口）**：通常走的是 **SSE（Server-Sent Events）**，格式是连续的 `data:` 行，例如：\n  ```\n  data: {\"id\":\"chatcmpl-123\", ..., \"delta\":{\"content\":\"你好\"}, ...}\n  data: {\"id\":\"chatcmpl-123\", ..., \"delta\":{\"content\":\"！\"}, ...}\n  ```\n  这类接口通过 HTTP 长连接逐步下发数据，前端再用 `fetch` 或 `EventSource` 流式读取。  \n  来源：[advanced__http-flows__basic-chat-http-flow#基础对话的-http-请求响应流程-4-llm-返回响应-4-1-流式响应-sse-格式](advanced__http-flows__basic-chat-http-flow#基础对话的-http-请求响应流程-4-llm-返回响应-4-1-流式响应-sse-格式)  \n  来源：[advanced__http-flows__sse-streaming-format#sse-流式响应格式详解-5-前端实现-5-2-使用-fetch-api-更灵活](advanced__http-flows__sse-streaming-format#sse-流式响应格式详解-5-前端实现-5-2-使用-fetch-api-更灵活)\n\n另外，知识库在多渠道推送部分也指出：网页端是“通过 WebSocket 实时推送”，而飞书、Telegram、QQ 等是推送到其他平台。  \n来源：[scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧#每天早上一条消息搞定全天-ai-早报自动生成的场景与调度技巧-提示词技巧-打造个性化早报-技巧四-多渠道推送](scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧#每天早上一条消息搞定全天-ai-早报自动生成的场景与调度技巧-提示词技巧-打造个性化早报-技巧四-多渠道推送)\n\n所以简单来说：**表现上都是“逐字/逐块蹦出”，但网页端和外部接口的底层推送方式很可能是不同的——网页端用 WebSocket 推送 chunk，HTTP API 流式接口",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-flows__sse-streaming-format",
+    "advanced__websocket",
+    "getting-started__ChannelConfig",
+    "scenarios__帮我做个网页然后上线：从需求描述到生产部署的完整话术",
+    "scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "HTTP 调用走 SSE 流式响应格式，逐段返回内容",
+    "网页端走 WebSocket 实时推送",
+    "前端对收到的增量分片做渐进渲染"
+   ],
+   "reason": "系统回答覆盖了网页端 WebSocket、HTTP 接口 SSE 流式推送以及前端增量渲染等核心要点，且未发现与参考要点矛盾。"
+  },
+  {
+   "id": "QF-10",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "能不能不买云端的接口，全用我自己电脑上跑的模型来喂它？对机器有什么要求吗？",
+   "expected_points": [
+    "支持本地模型（如 Ollama）作为 provider",
+    "配置时填本地端点地址",
+    "本地模型在性能/质量上有取舍说明"
+   ],
+   "answer": "知识库里没有直接说“能不能完全不买云端接口、只用自己的电脑跑模型”，但从现有文档可以得出这样的判断：\n\n**可以，但前提是：本机模型要作为一个 CountBot 能访问到的“模型服务”来运行。**  \nCountBot 的环境要求只写到了：\n\n-",
+   "refused_keyword": false,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__agent-system-design-guide",
+    "advanced__deployment",
+    "api-reference",
+    "core__im-commands",
+    "core__providers",
+    "getting-started__installation"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "支持本地模型作为服务运行"
+   ],
+   "reason": "仅说明可以本机运行模型服务，未提及Ollama/本地端点地址配置及性能质量取舍"
+  },
+  {
+   "id": "QF-11",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "想把它放到一台一直开着的机器上跑，让我们全组人都能打开用，从构建到能访问大概要做哪些事？",
+   "expected_points": [
+    "前端构建产物在 frontend/dist/",
+    "设置监听所有网卡（COUNTBOT_HOST=0.0.0.0）让局域网访问",
+    "对外开放需要认证与安全配置"
+   ],
+   "answer": "根据知识库内容，把系统部署到一台常开的机器上并让全组访问，大致需要做以下事情：\n\n1. **准备与构建（若是纯源码）**  \n   - Release 包通常已包含构建好的前端产物，不需要手动构建。  \n   - 如果你修改了前端代码或拿到的是纯源码，需要先构建前端：  \n     ```bash\n     cd frontend\n     npm install\n     npm run build\n     cd ..\n     ```\n   - 构建产物会输出到 `frontend/dist/`，后端会自动提供该目录下的静态文件。  \n   来源：[getting-started__installation#安装与启动-方式一-源码运行-构建前端-可选](getting-started__installation#安装与启动-方式一-源码运行-构建前端-可选)\n\n2. **启动后端服务**  \n   - 构建完成后启动后端，让服务在机器上持续运行（知识库当前片段中未给出具体启动命令）。\n\n3. **按稳妥顺序配置系统**  \n   建议遵循官方给出的配置顺序：  \n   - 先配全局模型与安全策略  \n   - 再确认工作空间  \n   - 再设默认人格  \n   - 再建团队和角色  \n   - 再接渠道账号  \n   - 最后接外部编程工具与默认路由  \n   来源：[getting-started__configuration#配置系统-一个稳妥的配置顺序](getting-started__configuration#配置系统-一个稳妥的配置顺序)\n\n4. **首次进入后的推荐配置顺序**  \n   - 先把默认模型和工作空间配稳定  \n   - 再配置团队和角色  \n   - 再接入渠道账号  \n   - 最后决定是否给某些渠道账号接入外部编程工具  \n   来源：[getting-started__installation#安装与启动-首次进入后的建议顺序-4-再配置团队-渠道和编程工具](getting-started__installation#安装与启动-首次进入后的建议顺序-4-再配置团队-渠道和编程工具)\n\n完成以上步骤后，保持机器常开并确保网络可达，组内成员即可通过对应地址访问使用。如果还需要具体的后端启动命令或访问地址配置，当前知识库片段中未提供详细信息。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "scenarios__帮我做个网页然后上线：从需求描述到生产部署的完整话术"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "前端构建产物在 frontend/dist/"
+   ],
+   "reason": "覆盖了前端构建产物位置，但遗漏COUNTBOT_HOST=0.0.0.0局域网监听设置，且未明确对外开放所需的认证与安全配置"
+  },
+  {
+   "id": "QF-12",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "让它帮忙跑终端命令的话，万一它哪天执行了个删库跑路级别的操作怎么办？有什么保护机制拦着它？",
+   "expected_points": [
+    "Shell 工具有安全限制机制",
+    "restrict_to_workspace 限制文件访问范围在工作空间内",
+    "敏感操作有确认或审计机制"
+   ],
+   "answer": "有保护机制，主要靠以下几层防护：\n\n- **危险命令模式拦截**：内置 `DANGEROUS_PATTERNS` 模式库，会匹配并拦截类似 `rm -rf /`、`mkfs`、`dd if=`、`:(){ :|:& };:`、`> /dev/sd*`、`sudo/su`、`shutdown/reboot`、`kill -9 1`、读 `/etc/passwd` 等“删库跑路”级命令 [advanced__http-api-deep-dive#http-api-深度解析-6-shell-命令执行-危险命令检测] [core__tools#工具系统-内置工具-shell-工具-安全机制]。\n- **自定义拒绝/白名单**：可配置 `custom_deny_patterns` 增加额外拦截，也可启用 `custom_allow_patterns` 命令白名单，只允许白名单内的命令执行 [advanced__security#安全体系-shell-命令防护]。\n- **工作空间范围限制**：`restrict_to_workspace=True` 时，命令执行的 `cwd` 被限制在工作空间内，不能越界操作 [core__tools#工具系统-内置工具-shell-工具-安全机制]。\n- **超时与输出限制**：默认 30 秒超时，输出超过 `max_output_length`（默认 10000 字符）会被截断，降低恶意或失控命令的影响 [core__tools#工具系统-内置工具-shell-工具-安全机制]。\n\n另外，系统提示词里也强调“最小权限”“不执行未授权高危操作；不确定必询问”“高风险操作需要用户确认”等安全准则，要求模型在删除文件、修改关键配置等场景下先征求确认 [advanced__http-flows__system-prompt-construction#系统提示词构建详解-8-完整示例-8-1-最小配置-新用户-无技能]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__auth",
+    "advanced__http-flows__system-prompt-construction",
+    "advanced__security",
+    "core__tools",
+    "getting-started__update-guide"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "Shell工具安全限制机制",
+    "restrict_to_workspace限制文件访问范围",
+    "敏感操作确认机制"
+   ],
+   "reason": "系统回答覆盖了Shell工具安全限制、工作空间限制以及高风险操作确认机制等参考要点，且无明显编造。"
+  },
+  {
+   "id": "QF-13",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "我在两个不同的群里都拉了它，它会不会把两边聊的东西记串了？它靠什么分得清谁是谁？",
+   "expected_points": [
+    "会话按渠道 + 聊天 ID 隔离",
+    "记忆条目带来源标记可区分会话",
+    "不同群的上下文互不干扰"
+   ],
+   "answer": "它不会把两个群里的聊天内容记串。它判断一条消息归属于哪个会话上下文时，主要依据：\n\n- 来自哪个渠道  \n- 来自哪个账号  \n- 是群聊还是私聊  \n- 是否使用主账号共享群聊上下文  \n\n也就是说，不同群会被区分成不同的会话上下文，因此两边的聊天记录会分开管理，不会混在一起。  \n来源：[core__channels#渠道与机器人-会话作用域]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "core__channels",
+    "core__memory",
+    "core__skills-creation",
+    "getting-started__ChannelConfig"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "会话按渠道隔离（未提聊天ID）",
+    "不同群上下文互不干扰"
+   ],
+   "reason": "系统回答说明了按渠道区分会话且不同群不混，但未覆盖记忆条目带来源标记可区分会话这一要点，且未明确提及聊天ID隔离。"
+  },
+  {
+   "id": "QF-14",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "出了新版本想给它升级，怎么升才不会把我之前攒的东西搞丢？",
+   "expected_points": [
+    "升级前先备份",
+    "支持源码覆盖、命令行升级等多种方式",
+    "会话与记忆数据在新版本中保留/兼容"
+   ],
+   "answer": "最稳妥的方法是：**先完整备份数据，再把新版本装到新目录，然后把旧数据迁移过去**，不要直接在旧目录上原地覆盖。\n\n具体可按来源中的推荐流程操作：\n\n- 停止当前 CountBot  \n- 备份 `workspace/` 和 `data/countbot.db`  \n- 下载新版本源码包，解压到**新目录**（例如 `CountBot_new/`）  \n- 将旧目录中的 `data/` 和 `workspace/` 复制到新目录  \n- 安装依赖，启动新版本并验证  \n- 确认没问题后再清理旧目录  \n\n来源：[getting-started__update-guide#countbot-更新指南-源码覆盖-github-命令升级与桌面版更新-方式一-下载源码后覆盖更新-推荐流程]\n\n如果是桌面版，同样推荐：\n\n- 完全退出旧版桌面程序  \n- 备份旧版本目录里的 `data/` 和 `workspace/`  \n- 下载新版桌面版安装包或压缩包  \n- 解压到新目录  \n- 把旧版中的 `data/` 和 `workspace/` 复制到新目录  \n- 启动新版本并检查历史数据  \n\n来源：[getting-started__update-guide#countbot-更新指南-源码覆盖-github-命令升级与桌面版更新-方式三-下载桌面版更新-推荐流程]\n\n另外特别提醒：**不建议直接“全目录无差别覆盖”**，因为 `data/` 和 `workspace/` 可能被新版本的空目录覆盖，导致数据丢失。  \n来源：[getting-started__update-guide#countbot-更新指南-源码覆盖-github-命令升级与桌面版更新-方式一-下载源码后覆盖更新-这一方式的关键注意点]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "getting-started__update-guide",
+    "releases__v0.8.0"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "升级前先备份",
+    "源码覆盖方式",
+    "会话与记忆数据保留/兼容"
+   ],
+   "reason": "回答覆盖了备份、源码覆盖和桌面版数据迁移，但未提及命令行升级方式，遗漏了参考要点中的多种升级方式。"
+  },
+  {
+   "id": "QF-15",
+   "type": "cross_doc",
+   "semantic": true,
+   "question": "想让它帮我自动把邮箱里堆着的信分分类，需要先准备什么？能不能顺便让它每天固定时间自己弄一次？",
+   "expected_points": [
+    "邮件分拣需要相应技能与提示词设计（场景拆解）",
+    "配合定时任务可实现每日自动处理",
+    "分拣规则/分类话术有设计要点"
+   ],
+   "answer": "根据知识库，需要先做好以下几项准备：\n\n1. **给出明确的分类标准**，不能只说“帮我整理邮件”，而应告诉 Agent 具体的分类规则和各类别的判断依据，例如按“紧急、重要、信息、垃圾”等划分。  \n   [scenarios__一句话清空收件箱：AI邮件分拣的场景拆解与提示词技巧#一句话清空收件箱-ai-邮件分拣的场景拆解与提示词技巧-提示词技巧-让分拣更准确-技巧一-给-agent-提供分类标准]\n\n2. **确认邮箱账户支持并配置为 IMAP**，因为搜索、列文件夹、标记已读/未读、按文件名下载附件等高级能力依赖 IMAP；如果仍使用旧版 POP3，这些功能会受限。  \n   [scenarios__一句话清空收件箱：AI邮件分拣的场景拆解与提示词技巧#一句话清空收件箱-ai-邮件分拣的场景拆解与提示词技巧-边界与局限]\n\n3. **采用渐进式信任策略**，不要一开始就让 Agent 直接处理所有邮件。建议先只读分类、不做修改操作，之后逐步开放写权限和自动操作。  \n   [scenarios__一句话清空收件箱：AI邮件分拣的场景拆解与提示词技巧#一句话清空收件箱-ai-邮件分拣的场景拆解与提示词技巧-提示词技巧-让分拣更准确-技巧四-渐进式信任]\n\n至于每天固定时间自动分拣，**是可以实现的**。通过 CountBot 的 Cron 系统，可以设置定时任务，例如让 Agent 每天早上 8:30 自动检查新邮件并分类，然后发送摘要给你。对应的 cron 表达式为 `30 8 * * *`。  \n   [scenarios__一句话清空收件箱：AI邮件分拣的场景拆解与提示词技巧#一句话清空收件箱-ai-邮件分拣的场景拆解与提示词技巧-提示词技巧-让分拣更准确-技巧三-定时自动分拣]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "scenarios__一句话清空收件箱：AI邮件分拣的场景拆解与提示词技巧",
+    "scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "邮件分拣需要相应技能与提示词设计（场景拆解）",
+    "配合定时任务可实现每日自动处理",
+    "分拣规则/分类话术有设计要点"
+   ],
+   "reason": "系统回答覆盖了分类标准、IMAP配置与渐进式信任等准备要点，并说明定时任务可每日自动分拣，无明显编造。"
+  },
+  {
+   "id": "QF-16",
+   "type": "needle",
+   "semantic": true,
+   "question": "我记得文档里提过，一个窗口里消息攒到某个量，它就会自己动手写个压缩总结，那个量具体是多少来着？",
+   "expected_points": [
+    "30 条消息",
+    "15000 字符"
+   ],
+   "answer": "根据知识库，当会话历史超出窗口限制时，系统会自动进行总结，具体触发阈值为：\n\n- **消息数达到 30 条**\n- **或总字符数达到 15000 字符**\n\n当满足任一条件时，系统会触发自动总结，将旧消息压缩成摘要并写入记忆系统。\n\n来源：[advanced__http-api-deep-dive#http-api-深度解析-8-多轮对话和上下文管理-会话总结机制-自动总结触发条件]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "core__memory"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "30 条消息",
+    "15000 字符"
+   ],
+   "reason": "回答准确给出了自动总结触发的两个阈值，与参考要点一致。"
+  },
+  {
+   "id": "QF-17",
+   "type": "needle",
+   "semantic": true,
+   "question": "之前看到哪儿说过，它会把翻过的文档先存在手边，说能存多少份来着？满了之后会发生什么？",
+   "expected_points": [
+    "缓存容量为 128 个文档",
+    "超出后按 LRU 淘汰最久未使用的"
+   ],
+   "answer": "根据知识库内容，这里说的更像是**多轮对话的历史消息**，不是“文档”。具体份数知识库里**没有给出默认数值**，只是说明有一个上限参数：\n\n> 历史消息：从数据库加载，受 `max_history_messages` 限制。  \n> 来源：advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-关键要点\n\n当历史消息超过限制后，会触发“滚动窗口溢出总结”：\n\n1. 超出 `max_history` 的旧消息会被找出来：`overflow_messages = messages[:-max_history]`\n2. 使用 LLM 对这些旧消息生成摘要\n3. 摘要写入记忆系统\n4. 删除被溢出的旧消息，保持会话窗口轻量\n\n> 来源：advanced__http-api-deep-dive#http-api-深度解析-8-多轮对话和上下文管理-会话总结机制-滚动窗口溢出总结  \n> 来源：core__memory#记忆系统-自动总结\n\n补充：知识库只说了“受 `max_history_messages` / `max_history` 限制”，但**没有说明具体能存多少份**。满了之后的行为是：旧消息被总结后写入 `MEMORY.md`，记忆来源记作 `auto-overflow`，然后旧消息会被删除。\n\n> 来源：core__memory#记忆系统-存储位置  \n> 来源：core__memory#记忆系统-自动总结\n\n另注：代码示例里摘要写入时的 `source` 写的是 `\"web-chat\"`，但“自动总结”一节写的是 `auto-overflow`，知识库内部此处略有出入。",
+   "refused_keyword": false,
+   "has_citation": false,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "core__memory",
+    "core__skills-creation",
+    "scenarios__帮我做个网页然后上线：从需求描述到生产部署的完整话术"
+   ],
+   "verdict": "wrong",
+   "covered": [],
+   "reason": "回答将文档缓存误判为多轮对话历史消息，未提及128个文档容量和LRU淘汰机制"
+  },
+  {
+   "id": "QF-18",
+   "type": "needle",
+   "semantic": true,
+   "question": "文档里是不是说过，碰到某种报错它会自动掏出下一把备用钥匙接着用？是碰到什么情况才换？",
+   "expected_points": [
+    "收到 401 或 429 状态码时触发",
+    "自动切换到下一个 API Key 继续使用"
+   ],
+   "answer": "是的，文档中提到过这种机制。当遇到 **401（认证错误）或 429（限流错误）** 时，系统会自动切换到下一个 API Key 并重试，最多尝试 3 次；如果配置了多个 Key，无需手动切换。[releases__v0.9.0#countbot-v0-9-0-核心更新-5-api-key-轮换机制]、[core__agent-loop#agent-loop-api-key-轮换]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__prompt-optimization-guide",
+    "getting-started__configuration",
+    "getting-started__troubleshooting",
+    "releases__v0.8.0",
+    "releases__v0.9.0"
+   ],
+   "verdict": "hallucinated",
+   "covered": [
+    "收到401或429状态码时触发",
+    "自动切换到下一个API Key继续使用"
+   ],
+   "reason": "回答覆盖了核心触发与切换要点，但编造了参考要点未提及的“最多尝试3次”这一具体数字。"
+  },
+  {
+   "id": "QF-19",
+   "type": "needle",
+   "semantic": true,
+   "question": "那个被派出去单独跑腿的小帮手，最多允许它来回折腾多少个回合就必须停下来？",
+   "expected_points": [
+    "最多迭代 15 轮"
+   ],
+   "answer": "那个被派出去单独跑腿的小帮手指的是**子代理**（Subagent）。根据配置，子代理的 `max_iterations` 默认值为 **15**，也就是说它最多允许来回迭代 15 个回合就必须停下来。\n\n引用来源：[core__subagent#子代理系统-配置参数]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "advanced__agent-system-design-guide",
+    "advanced__http-flows__multi-turn-conversation",
+    "advanced__http-flows__system-prompt-construction",
+    "advanced__prompt-optimization-guide",
+    "getting-started__ChannelConfig",
+    "scenarios__帮我做个网页然后上线：从需求描述到生产部署的完整话术"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "最多迭代 15 轮"
+   ],
+   "reason": "系统回答准确指出子代理最多迭代15个回合，与参考要点一致。"
+  },
+  {
+   "id": "QF-20",
+   "type": "needle",
+   "semantic": true,
+   "question": "我记得文档说过，它的家底数据最后都塞在一个文件里，那文件叫什么名字？到点自动干活的那些安排存在哪个位置？",
+   "expected_points": [
+    "SQLite 数据库文件 countbot.db",
+    "定时任务存在 cron_jobs 表"
+   ],
+   "answer": "1. “家底数据”都塞在同一个数据库文件里，文件名是 **countbot.db**，完整路径为 `data/countbot.db`。  \n2. “到点自动干活”的定时任务安排，存放在该数据库的 **`cron_jobs` 表**中。  \n\n来源：[advanced__deployment#部署与运维-数据库]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "advanced__http-flows__system-prompt-construction",
+    "core__memory",
+    "core__skills-creation",
+    "core__tools",
+    "getting-started__configuration",
+    "getting-started__configuration-manual"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "SQLite 数据库文件 countbot.db",
+    "定时任务存在 cron_jobs 表"
+   ],
+   "reason": "系统回答准确覆盖了参考要点中的数据库文件名和定时任务存储位置，且无编造。"
+  },
+  {
+   "id": "QF-21",
+   "type": "needle",
+   "semantic": true,
+   "question": "之前翻文档看到过，有个功能改了之后每次打招呼的模型调用次数直接砍半，说的是哪个功能？",
+   "expected_points": [
+    "心跳问候功能",
+    "LLM 调用从 2 次降到 1 次"
+   ],
+   "answer": "这个功能是 **“心跳问候逻辑简化”**，对应 v0.9.0 的核心更新。\n\n它简化了主动问候模块的决策流程，**去掉了冗余的 LLM 决策层，使问候触发从 2 次模型调用降为 1 次**，因此每次打招呼的模型调用次数直接砍半，同时减少了 LLM 调用成本。\n\n来源： [releases__v0.9.0#countbot-v0-9-0-核心更新-4-心跳问候逻辑简化]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "advanced__http-flows__tool-call-http-flow",
+    "releases__v0.7.0"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "心跳问候功能",
+    "LLM 调用从 2 次降到 1 次"
+   ],
+   "reason": "系统回答准确指出心跳问候功能，并说明模型调用从 2 次降为 1 次，覆盖参考要点。"
+  },
+  {
+   "id": "QF-22",
+   "type": "needle",
+   "semantic": true,
+   "question": "有个聊天软件死活连不上的时候，可以给它配个网络中转对吧？文档说那个中转地址只认哪一种开头的？",
+   "expected_points": [
+    "socks5:// 协议"
+   ],
+   "answer": "根据你提供的知识库内容，没有说明“中转地址只认哪一种开头”。在 Telegram 无法连接的排查文档中，代理字段 `proxy` 同时支持 `socks5://` 和 `http://` 两种格式开头，例如：\n\n- `socks5://127.0.0.1:1080`\n- `http://127.0.0.1:7890`\n\n因此并非“只认某一种开头”。  \n来源：[getting-started__troubleshooting#常见问题排查-渠道接入-telegram-无法连接]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "advanced__remote-access",
+    "core__external-coding-tools",
+    "core__im-commands"
+   ],
+   "verdict": "hallucinated",
+   "covered": [],
+   "reason": "系统回答编造了代理字段同时支持http://开头及示例，与参考要点socks5://协议不符"
+  },
+  {
+   "id": "QF-23",
+   "type": "needle",
+   "semantic": true,
+   "question": "好像有个管理密码的硬性规定，具体是什么？最少几位、里头得掺点什么字符？",
+   "expected_points": [
+    "至少 8 位",
+    "必须包含大写字母、小写字母和数字"
+   ],
+   "answer": "根据知识库，管理密码的硬性规定是：\n\n- 最少 8 位。\n- 必须同时包含大写字母、小写字母和数字。\n\n引用来源：\n- [advanced__auth#远程访问认证-密码安全-密码规则] 明确规则：“最小长度：8 位；必须包含：大写字母、小写字母、数字”。\n- [advanced__deployment#部署与运维-生产部署-远程访问认证] 也写明：“密码要求: 至少 8 位,包含大写字母、小写字母和数字”。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__auth",
+    "advanced__http-flows__system-prompt-construction"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "至少 8 位",
+    "必须包含大写字母、小写字母和数字"
+   ],
+   "reason": "系统回答准确覆盖了参考要点且未编造。"
+  },
+  {
+   "id": "QF-24",
+   "type": "needle",
+   "semantic": true,
+   "question": "文档里有没有数过，它开箱不用折腾就能接的大模型一共是多少家？",
+   "expected_points": [
+    "22 个"
+   ],
+   "answer": "Found 6 matching sections for '文档里有没有数过，它开箱不用折腾就能接的大模型一共是多少家？':\n\n1. **多轮对话的 messages 数组演变** › 多轮对话的 messages 数组演变 > 第 2 轮对话 > LLM 最终响应 (score: 0.03) [高相关]\n   Source: advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-第-2-轮对话-llm-最终响应\n   ### LLM 最终响应\n```\n{   \"role\": \"assistant\",   \"content\": \"我已经读取了 README.md 文件。这是 CountBot 项目的说明文档，主要介绍了以下内容：\\n\\n1. **功能特性**：\\n   - 多模型支持（OpenAI、Claude、国产大模型）\\n   - 工具调用系统\\n   - 记忆管理\\n   - 技能系统\\n   - 多渠道\n\n2. **多轮对话的 messages 数组演变** › 多轮对话的 messages 数组演变 > 第 3 轮对话 > 发送给 LLM 的 messages（第 3 轮） (score: 0.03) [高相关]\n   Source: advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-第-3-轮对话-发送给-llm-的-messages-第-3-轮\n   ### 发送给 LLM 的 messages（第 3 轮）\n```\n[   {     \"role\": \"system\",     \"content\": \"# 核心身份\\n\\n你的名字是\\\"小C\\\"...(完整系统提示词)\"   },   {     \"role\": \"user\",     \"content\": \"你好\"   },   {     \"role\": \"assistant\",     \n\n3. **LLM 提供商** › LLM 提供商 > Provider 注册表 (score: 0.02) [高相关]\n   Source: core__providers#llm-提供商-provider-注册表-2\n   u.com/v1 |\n| baichuan | Baichuan4 | https://api.baichuan-ai.com/v1 |\n| minimax | MiniMax-M2.5 | https://api.minimaxi.com/anthropic |\n| vllm | your-model-name | http://localhost:8000/v1 |\n| ollama | ll\n\n4. **渠道与机器人** › 渠道与机器人 (score: 0.02) [相关]\n   Source: core__channels#渠道与机器人\n   # 渠道与机器人\nCountBot 的渠道系统负责把外部消息接进来，并把它们映射到正确的会话、路由模式和机器人账号。它不只是“接几个 IM 平台”，而是统一了消息入口、会话归属、团队调度和外部编码工具路由。\n\n5. **创建自定义技能** › 创建自定义技能 > 常见问题 > Q: 技能没有出现在列表中？ (score: 0.02) [相关]\n   Source: core__skills-creation#创建自定义技能-常见问题-q-技能没有出现在列表中\n   ### Q: 技能没有出现在列表中？\nA: 检查：\n- 目录名称是否正确（小写，连字符分隔）\n- SKILL.md 文件是否存在\n- YAML frontmatter 格式是否正确\n是否点击了「重载技能」按钮\n\n6. **多轮对话的 messages 数组演变** › 多轮对话的 messages 数组演变 > 第 3 轮对话 > LLM 响应 (score: 0.02) [相关]\n   Source: advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-第-3-轮对话-llm-响应\n   ### LLM 响应\n```\n{   \"role\": \"assistant\",   \"content\": \"不客气！如果你在使用 CountBot 的过程中遇到任何问题，或者需要进一步的帮助，随时告诉我。祝你使用愉快！😊\" } \n```\n",
+   "refused_keyword": false,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-flows__multi-turn-conversation",
+    "core__channels",
+    "core__providers",
+    "core__skills-creation"
+   ],
+   "verdict": "wrong",
+   "covered": [],
+   "reason": "系统回答仅列出文档检索片段，未直接回答开箱即用大模型数量为22个，与参考要点不符"
+  },
+  {
+   "id": "QF-25",
+   "type": "needle",
+   "semantic": true,
+   "question": "在 Linux 上装那个带界面的版本，是不是得先去系统里补一个依赖包？包名是啥？",
+   "expected_points": [
+    "libwebkit2gtk-4.0-37"
+   ],
+   "answer": "是的，Linux 下运行带界面的桌面版本需要先补装系统依赖。\n\n根据 [getting-started__installation#安装与启动-方式二-桌面模式-桌面模式依赖]，Linux 需要安装 `libwebkit2gtk-4.0-dev`，例如 Ubuntu/Debian：\n\n```\nsudo apt install libwebkit2gtk-4.0-dev\n```\n\n另外，[getting-started__troubleshooting#常见问题排查-桌面环境-linux-缺少-webkit2gtk] 也提到，如果提示缺少 webkit2gtk，可安装：\n\n```\nsudo apt install -y libwebkit2gtk-4.0-37\n```\n\n所以具体包名可能是 `libwebkit2gtk-4.0-dev` 或 `libwebkit2gtk-4.0-37`，取决于安装或运行时的需要。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-flows__system-prompt-construction",
+    "getting-started__installation",
+    "getting-started__troubleshooting",
+    "getting-started__update-guide"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "libwebkit2gtk-4.0-37"
+   ],
+   "reason": "系统回答覆盖了参考要点中的依赖包名 libwebkit2gtk-4.0-37，未遗漏核心要点。"
+  },
+  {
+   "id": "QF-26",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "这软件在我电脑上的那个工作文件夹里，都摆了些什么东西？",
+   "expected_points": [
+    "workspace/ 下包含 .skills_config.json、skills/、memory/、temp/ 等"
+   ],
+   "answer": "根据知识库，该软件的工作空间（工作文件夹）通常承载以下内容：\n\n- **技能目录**（`skills/`）\n- **记忆文件**（`memory/`）\n- **临时文件与截图**（`temp/`）\n- **运行中的业务产物 / 业务生成文件**\n- **外部编程工具配置文件**（`external_coding_tools.json`）\n\n工作空间路径还会影响文件工具根目录、Shell 工具工作目录、技能目录位置、记忆文件位置，以及截图和临时文件的输出位置。修改工作空间路径后需要重启应用。\n\n来源：  \n- [getting-started__installation#安装与启动-首次进入后的建议顺序-2-确认工作空间]  \n- [getting-started__configuration#配置系统-配置分层-6-工作空间]  \n- [core__external-coding-tools#外部编码工具-配置文件]  \n- [core__tools#工具系统-内置工具-shell-工具]  \n- [getting-started__configuration-manual#配置手册-工作空间]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "core__tools",
+    "getting-started__configuration",
+    "getting-started__configuration-manual",
+    "getting-started__update-guide"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "skills/",
+    "memory/",
+    "temp/"
+   ],
+   "reason": "覆盖了工作文件夹中的主要子目录，但遗漏了参考要点中的 .skills_config.json 等关键文件"
+  },
+  {
+   "id": "QF-27",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "我不想让它说话太放飞，有没有哪个参数像旋钮一样能管它脑洞开多大？",
+   "expected_points": [
+    "temperature（温度参数）控制输出随机性/发散程度"
+   ],
+   "answer": "有，CountBot 中对应的“旋钮”是 **`temperature`（LLM 温度参数）**。\n\n- 在 Agent Loop 的配置参数表中，明确列出了 `temperature`，默认值是 `0.0`，说明是“LLM 温度参数”。  \n  来源：[core__agent-loop#agent-loop-配置参数]\n\n- 在普通聊天会话配置中，也可以通过 `model.temperature` 来调节模型行为，示例中将其设为 `0.6`。  \n  来源：[core__agent-teams#智能体团队-会话配置-团队配置-全局配置的优先级-普通聊天会话]\n\n按通常理解：`temperature` 越低，模型输出越收敛、确定、不容易“放飞”；`temperature` 越高，输出越发散、更具随机性。知识库中只给出了参数定义和配置方式，没有展开“脑洞”大小与数值的具体对照说明，但你要找的“控制发散程度”的参数就是它。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "advanced__http-flows__system-prompt-construction",
+    "index",
+    "releases__v0.7.0",
+    "scenarios__帮我盯着这件事：定时监控与主动提醒的场景设计与自动化技巧"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "temperature（温度参数）控制输出随机性/发散程度"
+   ],
+   "reason": "系统回答准确指出 temperature 参数可控制模型输出发散程度，覆盖参考要点且未发现编造。"
+  },
+  {
+   "id": "QF-28",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "我给它装的那些本事，是一个筐里混着放还是每个单独一个文件夹？它自己怎么知道都有哪些能用？",
+   "expected_points": [
+    "每个技能一个独立目录，统一放在 workspace/skills/ 下",
+    "每个技能带 SKILL.md，由 SkillsLoader 扫描建立索引",
+    ".skills_config.json 控制哪些技能被禁用"
+   ],
+   "answer": "知识库里没有直接说明“装的本事”在底层文件夹里是“混放一个大筐”还是“每个技能单独一个文件夹”；也没有明确写 Agent 会通过扫描文件夹来自动发现可用能力。但有几点相关说明：\n\n- CountBot 把“本事”分成几类，不是混成一个概念：  \n  “工具负责文件、命令、网页、截图、媒体、记忆等原子能力；技能负责领域化能力封装与复用；",
+   "refused_keyword": false,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__prompt-optimization-guide",
+    "core__external-coding-tools",
+    "core__im-commands",
+    "core__skills",
+    "getting-started__configuration-manual",
+    "scenarios__一句话清空收件箱：AI邮件分拣的场景拆解与提示词技巧"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有直接说明技能目录和自动发现机制，未提供参考要点中的独立目录、SKILL.md、SkillsLoader扫描及配置控制信息"
+  },
+  {
+   "id": "QF-29",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "跟它聊到一半想推翻重来重新开个头，除了关掉窗口还有别的招吗？",
+   "expected_points": [
+    "用 /new 等斜杠命令重开会话"
+   ],
+   "answer": "有。除了关掉窗口，你可以在聊天中输入 **/new** 来创建一个全新的会话上下文，适合开新任务、避免旧上下文污染，重新开始一段独立对话；也可以使用 **/clear** 清空当前会话消息历史 [core__im-commands#im-命令-会话管理命令-new] [core__im-commands#im-命令-会话管理命令-clear]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-flows__multi-turn-conversation",
+    "core__im-commands",
+    "core__memory",
+    "getting-started__installation"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "用 /new 等斜杠命令重开会话"
+   ],
+   "reason": "系统回答明确给出了 /new 和 /clear 等斜杠命令来重开或清空会话，覆盖参考要点且未编造。"
+  },
+  {
+   "id": "QF-30",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "它能把我说过的喜好记下来下次用吗？记在哪、我自己能不能动手改？",
+   "expected_points": [
+    "长期记忆存在 workspace/memory/MEMORY.md，行式记录（日期|来源|内容）可直接编辑",
+    "模型通过工具读写记忆，不直接操作文件"
+   ],
+   "answer": "可以。根据知识库，你的明确偏好和习惯属于“有长期价值的事实”，会被写入记忆并在后续对话中供模型参考。\n\n- **能否记录**：可以。记忆系统的使用建议中明确写道：“用户偏好、项目约定、周期性任务特别适合用记忆” [core__memory#记忆系统-使用建议]。系统提示词中也规定“仅在以下情况写入：用户要求记住、明确偏好习惯、重要决策结论、长期配置信息” [advanced__http-flows__system-prompt-construction#系统提示词构建详解-3-核心身份部分-3-5-记忆系统]。  \n  模型通过 `memory` 工具调用 `write` 写入记忆，`search` 用于搜索，`read` 按行读取 [core__memory#记忆系统-记忆工具]。你只要说“记住我喜欢的……”之类的话，模型就会调用写入。\n\n- **记在哪**：记忆存储位置为 `workspace/memory/MEMORY.md`。每行一条记录，格式为 `日期|来源|内容`，例如：\n  ```\n  2026-02-15|web-chat|用户要求每天早上9点发送日报\n  ```\n  来源包括 `web-chat`、`telegram`、`dingtalk`、`feishu`、`cron`、`auto-overflow` 等 [core__memory#记忆系统-存储位置]。\n\n- **我自己能不能动手改**：知识库中没有说明你是否可以直接手动编辑 `MEMORY.md` 文件。它只提到记忆通过 `memory` 工具写入和读取，模型不直接操作文件，用户也是通过对话让模型代为写入/查询。因此，“用户能否直接手动修改记忆文件”这一内容在知识库中并未给出，需要如实告知。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__agent-system-design-guide",
+    "advanced__prompt-optimization-guide",
+    "advanced__remote-access",
+    "core__memory",
+    "scenarios__帮我做个网页然后上线：从需求描述到生产部署的完整话术",
+    "scenarios__帮我规划一趟旅行：多技能联动的复合任务拆解与编排技巧"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "长期记忆存在 workspace/memory/MEMORY.md",
+    "行式记录（日期|来源|内容）",
+    "模型通过工具读写记忆，不直接操作文件"
+   ],
+   "reason": "覆盖了存储位置、记录格式和工具读写方式，但遗漏并错误否定了用户可直接编辑记忆文件这一要点。"
+  }
+ ]
+}
