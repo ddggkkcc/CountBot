@@ -299,11 +299,14 @@ def build_vector_run(
     top_k: int = 50,
     name: str | None = None,
 ) -> Run:
-    """G2 纯向量 / G3 混合（RRF）块级 run（需 COUNTBOT_RAG_EMBEDDING_* 环境变量）
+    """G2 纯向量 / G3 混合（RRF） / G4 重排块级 run（需 COUNTBOT_RAG_EMBEDDING_* 环境变量）
 
     嵌入文本组装与生产一致（service.chunk_embedding_text），保证向量空间可比。
     G2 = Dense 单通道排序（停级条款的判定依据）；
-    G3 = HybridRetriever 双通道融合（与生产 search_chunks 同一条代码路径）。
+    G3 = HybridRetriever 双通道融合（与生产 search_chunks 同一条代码路径）；
+    G4 = G3 候选 top-50 → RerankerClient 精排 top-6（与生产 _rag_ask 同一条
+    精排路径；Phase 2 门禁"rerank 后 Hit@6 ≥90% / MRR 相对 +20%"的判定依据，
+    需额外配置 COUNTBOT_RAG_RERANK_*）。
     """
     import asyncio
 
@@ -314,8 +317,8 @@ def build_vector_run(
     from backend.modules.rag.service import chunk_embedding_text
     from backend.modules.rag.stores import VectorStore
 
-    if mode not in ("dense", "hybrid"):
-        sys.exit(f"mode 必须是 dense|hybrid，收到：{mode}")
+    if mode not in ("dense", "hybrid", "rerank"):
+        sys.exit(f"mode 必须是 dense|hybrid|rerank，收到：{mode}")
 
     embedder = build_embedding_client()
     if embedder is None:
@@ -335,7 +338,7 @@ def build_vector_run(
         vs.add(cid, vec)
 
     run = Run()
-    run.name = name or (f"G{2 if mode == 'dense' else 3}-{'dense' if mode == 'dense' else 'hybrid'}")
+    run.name = name or {"dense": "G2-dense", "hybrid": "G3-hybrid", "rerank": "G4-rerank"}[mode]
     if mode == "dense":
         for qid, query in queries.items():
             qvec = asyncio.run(embedder.embed_query(query))
@@ -343,10 +346,19 @@ def build_vector_run(
                 run.add_score(str(qid), str(cid), float(score))
     else:
         retriever = HybridRetriever(store, vs, embedder, candidate_k=top_k)
+        reranker = None
+        if mode == "rerank":
+            from backend.modules.rag.reranker import build_reranker
+            reranker = build_reranker()
+            if reranker is None:
+                sys.exit("未配置 COUNTBOT_RAG_RERANK_BASE_URL / API_KEY，无法构建 rerank run")
         for qid, query in queries.items():
-            results = asyncio.run(retriever.search(query, top_k=top_k))
+            candidates = asyncio.run(retriever.search(query, top_k=top_k))
+            # rerank 返回已按相关性截断的 top_n（默认 6）；未启用 rerank 时为 RRF 全序
+            results = (asyncio.run(reranker.rerank(query, candidates))
+                       if reranker is not None else candidates)
             for rank, c in enumerate(results, 1):
-                # search 已按融合分降序，转成递减分数保持名次
+                # 已按相关性降序，转成递减分数保持名次
                 run.add_score(str(qid), str(c["chunk_id"]), float(top_k - rank))
     return run
 
@@ -635,6 +647,9 @@ def main() -> int:
                         help="G2 纯向量 run（需 COUNTBOT_RAG_EMBEDDING_* 环境变量），停级条款判定用")
     parser.add_argument("--hybrid-run", metavar="TAG",
                         help="G3 混合 run（BM25+Dense RRF，生产同路径），Phase 1 门禁用")
+    parser.add_argument("--rerank-run", metavar="TAG",
+                        help="G4 重排 run（G3 候选 top-50 → reranker 精排 top-6，生产 _rag_ask 同路径），"
+                             "Phase 2 门禁用；需 COUNTBOT_RAG_RERANK_* 环境变量")
     parser.add_argument("--corpus", default=str(BENCH / "corpus"),
                         help="块级模式语料目录（含 manifest.json），默认 rag-bench/corpus")
     parser.add_argument("--questions-jsonl", default=str(BENCH / "questions.jsonl"),
@@ -661,7 +676,7 @@ def main() -> int:
 
     qrels = None
     qtype_map = None
-    vector_mode = args.dense_run or args.hybrid_run
+    vector_mode = args.dense_run or args.hybrid_run or args.rerank_run
     corpus_mode = args.chunk_run or vector_mode
     if corpus_mode:
         store = build_chunk_index(args.corpus)
@@ -685,6 +700,10 @@ def main() -> int:
         if args.hybrid_run:
             runs[args.hybrid_run] = build_vector_run(
                 args.corpus, queries, mode="hybrid", top_k=args.top_k, name=args.hybrid_run,
+            ).to_dict()
+        if args.rerank_run:
+            runs[args.rerank_run] = build_vector_run(
+                args.corpus, queries, mode="rerank", top_k=args.top_k, name=args.rerank_run,
             ).to_dict()
     elif args.qrels:
         qrels = parse_trec_plain(args.qrels, kind="qrels")
