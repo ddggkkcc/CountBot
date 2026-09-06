@@ -1,0 +1,43 @@
+{
+ "summary": {
+  "model": "deepseek-v4-flash",
+  "llm_calls": 6,
+  "negative": {
+   "n": 0,
+   "refused": 0,
+   "note": "拒答率 = 负样本中被明确告知'没有找到相关内容'的比例，期望 10/10"
+  },
+  "positive": {
+   "n": 3,
+   "answered": 2,
+   "with_citation": 1,
+   "note": "不回退率 = 正样本正常回答的比例，期望 50/50"
+  }
+ },
+ "detail": [
+  {
+   "id": "S1-01",
+   "type": "single_doc",
+   "question": "CountBot 的长期记忆存储在哪里？是什么格式的文件？",
+   "refused": false,
+   "has_citation": true,
+   "answer_head": "CountBot 的长期记忆存储在工作空间中的 **`workspace/memory/MEMORY.md`** 文件内，采用**单文件 Markdown 格式**存储。  \n每行一条记录，格式为：`日期|来源|内容`，例如：`2026-0"
+  },
+  {
+   "id": "S1-02",
+   "type": "single_doc",
+   "question": "CountBot 记忆条目的格式长什么样？包含哪些字段？",
+   "refused": false,
+   "has_citation": false,
+   "answer_head": "知识库中没有关于 CountBot 记忆条目格式及字段的内容。"
+  },
+  {
+   "id": "S1-03",
+   "type": "single_doc",
+   "question": "什么是 auto-overflow 记忆？什么情况下会产生？",
+   "refused": true,
+   "has_citation": false,
+   "answer_head": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）"
+  }
+ ]
+}

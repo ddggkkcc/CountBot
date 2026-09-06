@@ -1,0 +1,67 @@
+{
+ "summary": {
+  "model": "deepseek-v4-flash",
+  "judge_model": "deepseek-v4-pro",
+  "llm_calls_total": 2,
+  "judge_calls": 1,
+  "negative": {
+   "n": 0,
+   "refused": 0,
+   "hallucinated": 0,
+   "refusal_rate": null,
+   "note": "拒答率 = 负样本被判 refused 的比例（judge 口径），期望 10/10"
+  },
+  "positive": {
+   "n": 1,
+   "answered": 1,
+   "verdicts": {
+    "correct": 0,
+    "partial": 0,
+    "wrong": 0,
+    "refused": 0,
+    "hallucinated": 1
+   },
+   "quality_pass": 0,
+   "with_citation": 1,
+   "misrefusal_attribution": {
+    "retrieval_miss": [],
+    "grader_error": [],
+    "no_signal": []
+   },
+   "note": "误拒答归因：retrieval_miss=第一次检索未召回（检索层问题），grader_error=检索已命中仍拒答（编排层问题）"
+  },
+  "judge_keyword_agreement": 1.0,
+  "judge_keyword_agreement_note": "judge 与关键词拒答判定的一致率；显著低于 1.0 时优先排查 judge prompt 而非系统行为"
+ },
+ "pairwise": null,
+ "detail": [
+  {
+   "id": "S1-01",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "CountBot 的长期记忆存储在哪里？是什么格式的文件？",
+   "expected_points": [
+    "工作空间中的单文件存储",
+    "JSON 格式，可直接查看编辑"
+   ],
+   "answer": "根据知识库，CountBot 的长期记忆存储在其**工作空间中的单个文件**中，用户可直接查看和编辑 [core__memory#记忆系统]。该文件的格式为 **Markdown 文件**，文件名通常为 `MEMORY.md`；内容以 `#` 开头，并包含日期、来源和记忆内容等信息 [advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-自动记忆写入-记忆格式]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "api-reference",
+    "core__memory",
+    "getting-started__configuration-manual",
+    "index"
+   ],
+   "verdict": "hallucinated",
+   "covered": [
+    "工作空间中的单文件存储",
+    "可直接查看编辑"
+   ],
+   "reason": "系统回答编造了Markdown文件和MEMORY.md文件名，与参考要点中的JSON格式明显不符。"
+  }
+ ]
+}

@@ -1,0 +1,1936 @@
+{
+ "summary": {
+  "model": "deepseek-v4-flash",
+  "judge_model": "deepseek-v4-pro",
+  "llm_calls_total": 128,
+  "judge_calls": 60,
+  "negative": {
+   "n": 10,
+   "refused": 8,
+   "hallucinated": 0,
+   "refusal_rate": 0.8,
+   "note": "拒答率 = 负样本被判 refused 的比例（judge 口径），期望 10/10"
+  },
+  "positive": {
+   "n": 50,
+   "answered": 40,
+   "verdicts": {
+    "correct": 29,
+    "partial": 8,
+    "wrong": 1,
+    "refused": 10,
+    "hallucinated": 1
+   },
+   "quality_pass": 37,
+   "with_citation": 37,
+   "misrefusal_attribution": {
+    "retrieval_miss": [
+     "S2-14"
+    ],
+    "grader_error": [
+     "S1-09",
+     "S1-14",
+     "S1-21",
+     "S2-06",
+     "S2-08",
+     "S2-10",
+     "S2-15",
+     "S3-04",
+     "S3-07"
+    ],
+    "no_signal": []
+   },
+   "note": "误拒答归因：retrieval_miss=第一次检索未召回（检索层问题），grader_error=检索已命中仍拒答（编排层问题）"
+  },
+  "judge_keyword_agreement": 0.9123,
+  "judge_keyword_agreement_note": "judge 与关键词拒答判定的一致率；显著低于 1.0 时优先排查 judge prompt 而非系统行为"
+ },
+ "pairwise": {
+  "baseline": "../results/crag-detail-v2-g1-baseline.json",
+  "note": "换序双判一致才计票，不一致记 tie（防 position bias 的保守口径）",
+  "win": 18,
+  "loss": 19,
+  "tie": 21,
+  "skipped": 2,
+  "detail": [
+   {
+    "id": "S1-02",
+    "type": "single_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-03",
+    "type": "single_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S1-04",
+    "type": "single_doc",
+    "outcome": "tie",
+    "judge_a_first": "B",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-05",
+    "type": "single_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-06",
+    "type": "single_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S1-07",
+    "type": "single_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S1-08",
+    "type": "single_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-09",
+    "type": "single_doc",
+    "outcome": "tie",
+    "judge_a_first": "TIE",
+    "judge_b_first": "TIE"
+   },
+   {
+    "id": "S1-10",
+    "type": "single_doc",
+    "outcome": "tie",
+    "judge_a_first": "A",
+    "judge_b_first": "TIE"
+   },
+   {
+    "id": "S1-11",
+    "type": "single_doc",
+    "outcome": "tie",
+    "judge_a_first": null,
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-12",
+    "type": "single_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S1-13",
+    "type": "single_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S1-15",
+    "type": "single_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-16",
+    "type": "single_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S1-17",
+    "type": "single_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-18",
+    "type": "single_doc",
+    "outcome": "tie",
+    "judge_a_first": "B",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-19",
+    "type": "single_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S1-20",
+    "type": "single_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-21",
+    "type": "single_doc",
+    "outcome": "tie",
+    "judge_a_first": "TIE",
+    "judge_b_first": "TIE"
+   },
+   {
+    "id": "S1-22",
+    "type": "single_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-23",
+    "type": "single_doc",
+    "outcome": "tie",
+    "judge_a_first": "B",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S1-24",
+    "type": "single_doc",
+    "outcome": "tie",
+    "judge_a_first": "TIE",
+    "judge_b_first": "TIE"
+   },
+   {
+    "id": "S1-25",
+    "type": "single_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S2-01",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S2-02",
+    "type": "cross_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S2-03",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S2-04",
+    "type": "cross_doc",
+    "outcome": "tie",
+    "judge_a_first": "B",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S2-05",
+    "type": "cross_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S2-06",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S2-07",
+    "type": "cross_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S2-08",
+    "type": "cross_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S2-09",
+    "type": "cross_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S2-10",
+    "type": "cross_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S2-11",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S2-12",
+    "type": "cross_doc",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S2-13",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S2-14",
+    "type": "cross_doc",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S2-15",
+    "type": "cross_doc",
+    "outcome": "tie",
+    "judge_a_first": "B",
+    "judge_b_first": "TIE"
+   },
+   {
+    "id": "S3-01",
+    "type": "needle",
+    "outcome": "tie",
+    "judge_a_first": "A",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S3-02",
+    "type": "needle",
+    "outcome": "tie",
+    "judge_a_first": "A",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S3-03",
+    "type": "needle",
+    "outcome": "tie",
+    "judge_a_first": "A",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S3-04",
+    "type": "needle",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S3-05",
+    "type": "needle",
+    "outcome": "tie",
+    "judge_a_first": "A",
+    "judge_b_first": "TIE"
+   },
+   {
+    "id": "S3-06",
+    "type": "needle",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S3-07",
+    "type": "needle",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S3-08",
+    "type": "needle",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S3-09",
+    "type": "needle",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S3-10",
+    "type": "needle",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S4-01",
+    "type": "negative",
+    "outcome": "loss",
+    "judge_a_first": "B",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S4-02",
+    "type": "negative",
+    "outcome": "tie",
+    "judge_a_first": "TIE",
+    "judge_b_first": "TIE"
+   },
+   {
+    "id": "S4-03",
+    "type": "negative",
+    "outcome": "tie",
+    "judge_a_first": "A",
+    "judge_b_first": null
+   },
+   {
+    "id": "S4-04",
+    "type": "negative",
+    "outcome": "tie",
+    "judge_a_first": "TIE",
+    "judge_b_first": "TIE"
+   },
+   {
+    "id": "S4-05",
+    "type": "negative",
+    "outcome": "tie",
+    "judge_a_first": "TIE",
+    "judge_b_first": "TIE"
+   },
+   {
+    "id": "S4-06",
+    "type": "negative",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S4-07",
+    "type": "negative",
+    "outcome": "tie",
+    "judge_a_first": "TIE",
+    "judge_b_first": "TIE"
+   },
+   {
+    "id": "S4-08",
+    "type": "negative",
+    "outcome": "tie",
+    "judge_a_first": "A",
+    "judge_b_first": "A"
+   },
+   {
+    "id": "S4-09",
+    "type": "negative",
+    "outcome": "win",
+    "judge_a_first": "A",
+    "judge_b_first": "B"
+   },
+   {
+    "id": "S4-10",
+    "type": "negative",
+    "outcome": "tie",
+    "judge_a_first": "TIE",
+    "judge_b_first": "TIE"
+   }
+  ]
+ },
+ "detail": [
+  {
+   "id": "S1-01",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "CountBot 的长期记忆存储在哪里？是什么格式的文件？",
+   "expected_points": [
+    "工作空间中的单文件存储（workspace/memory/MEMORY.md）",
+    "行式记录：每行一条（日期|来源|内容），可直接查看编辑"
+   ],
+   "answer": "CountBot 的长期记忆存储在工作空间中的一个单文件里，用户可以自行查看和编辑。该文件为 Markdown 格式，文件名为 `MEMORY.md`，内容以日期和记忆条目形式记录 [core__memory#记忆系统] [advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-自动记忆写入-记忆格式]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "api-reference",
+    "core__memory",
+    "index"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "工作空间中的单文件存储",
+    "MEMORY.md 文件名",
+    "Markdown 格式",
+    "可直接查看编辑"
+   ],
+   "reason": "遗漏了具体路径 workspace/memory 以及每行一条含日期|来源|内容的行式记录格式。"
+  },
+  {
+   "id": "S1-02",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "CountBot 记忆条目的格式长什么样？包含哪些字段？",
+   "expected_points": [
+    "条目字段结构（id/时间戳/内容/来源等）"
+   ],
+   "answer": "根据提供的知识库示例，CountBot 记忆条目格式为：\n\n```text\n# MEMORY.md 日期|来源/渠道|记忆正文\n```\n\n示例：\n\n```text\n# MEMORY.md 2024-01-15|web-chat|用户学习了 CountBot 的工具系统，包括 read_file、write_file 的使用方法；用户邮箱: [email protected]\n```\n\n包含的字段可以拆解为：\n\n1. **固定前缀**：`# MEMORY.md`\n2. **日期**：如 `2024-01-15`\n3. **来源/渠道**：如 `web-chat`\n4. **记忆正文**：如用户所学的工具、联系方式等，多个信息点用分号隔开。\n\n来源：[advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-自动记忆写入-记忆格式](advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-自动记忆写入-记忆格式)",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "about",
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "core__skills-creation",
+    "index"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "时间戳",
+    "内容",
+    "来源"
+   ],
+   "reason": "系统回答覆盖了时间戳、内容、来源等字段，但遗漏了参考要点中的 id 字段。"
+  },
+  {
+   "id": "S1-03",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "什么是 auto-overflow 记忆？什么情况下会产生？",
+   "expected_points": [
+    "会话历史超出窗口限制时",
+    "旧消息被压缩写入记忆，来源标记为 auto-overflow"
+   ],
+   "answer": "根据知识库内容，**auto-overflow 记忆**是指当会话历史超出窗口限制时，系统将超出窗口的旧消息自动进行总结，并以 `auto-overflow` 为来源写入记忆系统的一种机制。这样可以保持会话窗口轻量，同时避免重要信息丢失。[core__memory#记忆系统-自动总结]\n\n**产生情况**：当会话历史超过一定限制时触发。例如：\n\n- 消息数量达到阈值（如 `msg_count >= 30`）或总字符数达到阈值（如 `total_chars >= 15000`）时，会触发自动总结流程。[advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-自动记忆写入-自动记忆流程]\n- 当历史消息数量超过预设的 `max_history` 限制时，系统会总结溢出的旧消息，并保存到记忆系统，同时删除这些溢出的消息。[advanced__http-api-deep-dive#http-api-深度解析-8-多轮对话和上下文管理-会话总结机制-滚动窗口溢出总结]\n\n简单来说，**auto-overflow 记忆是在会话历史超出窗口限制时自动产生的总结性记忆**。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "core__memory"
+   ],
+   "verdict": "unknown",
+   "judge_fallback": true
+  },
+  {
+   "id": "S1-04",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "AI 模型是怎么读写长期记忆的？需要直接操作文件吗？",
+   "expected_points": [
+    "通过工具调用读写",
+    "模型不直接操作文件"
+   ],
+   "answer": "AI 模型通过 **memory 工具**读写长期记忆，**不需要直接操作文件**。\n\n- 记忆工具支持 `action` 参数，包括：`write`（追加记忆）、`search`（关键词搜索）、`read`（按行读取）[core__memory#记忆系统-记忆工具]。\n- 底层采用单文件存储长期记忆（如 `MEMORY.md`），文件位于工作空间中，用户可以直接查看和编辑 [core__memory#记忆系统][advanced__http-api-deep-dive#http-api-深度解析-8-多轮对话和上下文管理-记忆系统集成-记忆文件格式-memory-md]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__system-prompt-construction",
+    "api-reference",
+    "core__memory"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "通过工具调用读写",
+    "模型不直接操作文件"
+   ],
+   "reason": "回答明确指出模型通过工具调用读写长期记忆且无需直接操作文件，覆盖参考要点并无编造。"
+  },
+  {
+   "id": "S1-05",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "CountBot 有哪几种启动方式？分别用什么命令？",
+   "expected_points": [
+    "start_app.py / start_desktop.py / start_dev.py 等启动脚本及区别"
+   ],
+   "answer": "根据 Wiki 知识库，CountBot 支持**源码运行**和**桌面模式**两种启动方式。其中明确给出了源码运行的启动命令，桌面模式未提供具体命令。\n\n- **源码运行**：使用命令 `python start_app.py` 启动。也可通过设置环境变量 `COUNTBOT_HOST` 和 `COUNTBOT_PORT` 自定义监听地址与端口后再运行该命令。[getting-started__installation#安装与启动-方式一-源码运行-3-启动服务] [releases__v0.8.0#countbot-v0-8-0-核心更新-8-启动配置统一化]\n\n- **桌面模式**：知识库中仅提及 CountBot 支持此模式，但未给出具体启动命令。[getting-started__installation#安装与启动]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "getting-started__installation",
+    "releases__v0.8.0"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "源码运行启动命令 python start_app.py"
+   ],
+   "reason": "仅覆盖了源码运行的 start_app.py 命令，遗漏了 start_desktop.py 和 start_dev.py 等启动脚本及区别。"
+  },
+  {
+   "id": "S1-06",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "CountBot 对运行环境有什么要求？需要什么版本的 Python？",
+   "expected_points": [
+    "Python 版本要求",
+    "操作系统支持情况"
+   ],
+   "answer": "CountBot 的运行环境要求如下：\n\n- **Python 版本**：需要 Python 3.11 或更高版本（Python 3.11+）。\n- **操作系统**：支持 Windows、macOS 或 Linux。\n- **其他要求**：需要能够访问你准备接入的模型服务。\n\n来源：  \n[getting-started__installation#安装与启动-环境要求-运行-countbot]  \n[advanced__deployment#部署与运维-环境要求]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "about",
+    "advanced__deployment",
+    "getting-started__installation",
+    "index",
+    "releases__v0.3.0"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "Python 版本要求",
+    "操作系统支持情况"
+   ],
+   "reason": "系统回答准确给出了 Python 3.11+ 和 Windows/macOS/Linux 支持，覆盖参考要点。"
+  },
+  {
+   "id": "S1-07",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "怎么让局域网内其他设备访问 CountBot 的 Web 界面？",
+   "expected_points": [
+    "COUNTBOT_HOST=0.0.0.0 环境变量",
+    "通过本机 IP+端口访问"
+   ],
+   "answer": "要让局域网内其他设备访问 CountBot 的 Web 界面，需要将监听地址设置为 `0.0.0.0`，并指定端口后启动服务。具体方法如下：\n\n- **源码运行方式**：启动前设置环境变量 `COUNTBOT_HOST=0.0.0.0`，同时可自定义 `COUNTBOT_PORT`（例如 `8000` 或 `9000`），然后运行 `python start_app.py` [advanced__deployment#部署与运维-启动-监听外部访问]。  \n  示例（Bash）：\n  ```bash\n  export COUNTBOT_HOST=0.0.0.0\n  export COUNTBOT_PORT=8000\n  python start_app.py\n  ```\n  Windows PowerShell 示例：\n  ```powershell\n  $env:COUNTBOT_HOST = '0.0.0.0'\n  $env:COUNTBOT_PORT = '8000'\n  python start_app.py\n  ```\n  [advanced__remote-access#远程访问指南-一-局域网访问配置-1-2-源码版本配置方法-修改监听地址]\n\n- **启动后验证**：启动日志中会出现类似 `Network: http://<局域网IP>:8000` 的地址，局域网内其他设备访问该地址即可 [advanced__remote-access#远程访问指南-一-局域网访问配置-1-4-验证配置][getting-started__installation#安装与启动-方式一-源码运行-3-启动服务]。注意，如果未设置 `COUNTBOT_HOST=0.0.0.0`，CountBot 默认只监听 `127.0.0.1:8000`，仅本机可访问 [advanced__remote-access#远程访问指南-一-局域网访问配置-1-1-启动参数]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__deployment",
+    "advanced__remote-access",
+    "getting-started__installation"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "COUNTBOT_HOST=0.0.0.0 环境变量",
+    "通过本机 IP+端口访问"
+   ],
+   "reason": "系统回答覆盖了设置 COUNTBOT_HOST=0.0.0.0 以及通过局域网 IP 加端口访问的要点，且无编造"
+  },
+  {
+   "id": "S1-08",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "桌面版相比 Web 版有什么限制？",
+   "expected_points": [
+    "桌面版功能边界",
+    "系统依赖差异（libwebkit2gtk）"
+   ],
+   "answer": "根据知识库内容，CountBot 的“桌面版”与“Web 版”后端是同一套；主要限制集中在**桌面预编译版**（如 `.exe` 安装包）上：\n\n- **无法修改监听地址，不能开启远程访问**。桌面预编译版不支持通过环境变量修改监听地址，因此只能在本机使用，不能远程访问。如需远程访问，应使用源码版本（如 `COUNTBOT_HOST=0.0.0.0 python start_app.py`），或通过反向代理、内网穿透工具暴露端口。[getting-started__installation#安装与启动-方式二-桌面模式] [getting-started__troubleshooting#常见问题排查-认证与远程访问-桌面预编译版能否开启远程访问] [advanced__remote-access#远程访问指南-五-常见问题-q7-桌面预编译版能否开启远程访问] [advanced__deployment#部署与运维-启动-桌面模式]\n\n- **桌面模式以原生窗口运行，窗口关闭后服务自动退出**。它适合本机图形界面使用；如果需要像 Web 版那样通过浏览器访问/远程访问，则需要改用源码模式启动服务。[getting-started__installation#安装与启动-方式二-桌面模式]\n\n- **桌面预编译版存在系统组件依赖**。例如 Windows 缺少 WebView2 时窗口可能无法打开，Linux 可能需要安装 `libwebkit2gtk` 才能正常运行。[getting-started__update-guide#countbot-更新指南-源码覆盖-github-命令升级与桌面版更新-方式三-下载桌面版更新-桌面版常见问题]\n\n- 如果你是使用源码运行 `python start_desktop",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__deployment",
+    "advanced__remote-access",
+    "getting-started__installation",
+    "getting-started__troubleshooting",
+    "getting-started__update-guide"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "桌面版功能边界（无法修改监听地址/不能远程访问、窗口关闭即退出）",
+    "系统依赖差异（libwebkit2gtk/WebView2）"
+   ],
+   "reason": "系统回答覆盖了桌面版在远程访问、运行方式及系统依赖方面的限制，符合参考要点且未发现编造。"
+  },
+  {
+   "id": "S1-09",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "requirements.txt 里的依赖是怎么分类的？",
+   "expected_points": [
+    "依赖分组结构（核心/渠道/桌面等分类方式）"
+   ],
+   "answer": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__deployment",
+    "core__skills-creation",
+    "getting-started__installation"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有相关内容，拒绝回答。"
+  },
+  {
+   "id": "S1-10",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "CountBot 启动后的自检清单有哪些检查项？",
+   "expected_points": [
+    "启动自检项列表（配置/网络/渠道等）"
+   ],
+   "answer": "根据 [getting-started__installation#安装与启动-启动后自检清单](getting-started__installation#安装与启动-启动后自检清单)，CountBot 启动后的自检清单包含：\n\n- Web 页面能正常打开\n- 设置页能读取并保存模型配置\n- 聊天页能完成一次基础问答\n- 工作空间路径可读可写\n- 如需外部渠道，渠道测试接口可以通过\n- 日志输出正常，无 ERROR 级别错误",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__deployment",
+    "getting-started__installation",
+    "getting-started__update-guide",
+    "index",
+    "releases__v0.3.0"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "配置",
+    "网络",
+    "渠道"
+   ],
+   "reason": "系统回答列出了启动自检项，覆盖配置、网络和渠道等参考要点，且内容具体合理。"
+  },
+  {
+   "id": "S1-11",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "workspace 工作空间目录里都有哪些内容？",
+   "expected_points": [
+    "skills/、memory/、temp/、.skills_config.json 等结构"
+   ],
+   "answer": "根据知识库，工作空间目录通常包含以下内容：\n\n- `.skills_config.json` — 技能启用状态配置  \n- `skills/` — 技能目录，存放各技能的子目录（如 agent-browser、email、weather 等）  \n- `memory/` — 记忆文件  \n- `temp/` — 临时文件与截图  \n- 运行中的业务产物  \n- 外部编程工具配置文件（`external_coding_tools.json`）\n\n这些内容在“工作空间配置”中也有结构示例：\n```\nworkspace/\n├── .skills_config.json      # 技能启用状态\n├── skills/                  # 技能目录\n├── memory/                  # 记忆文件\n└── temp/                    # 临时文件\n```\n\n来源：\n- [getting-started__configuration-manual#配置手册-配置存储-工作空间配置]  \n- [getting-started__installation#安装与启动-首次进入后的建议顺序-2-确认工作空间]  \n- [core__skills#技能系统-目录结构]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "api-reference",
+    "core__skills",
+    "core__tools",
+    "getting-started__configuration-manual",
+    "getting-started__installation"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "skills/",
+    "memory/",
+    "temp/",
+    ".skills_config.json"
+   ],
+   "reason": "系统回答覆盖了参考要点中的核心工作空间目录与配置文件，并补充了知识库相关产物和配置，未发现明显编造。"
+  },
+  {
+   "id": "S1-12",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "前端构建产物放在哪个目录？",
+   "expected_points": [
+    "frontend/dist/"
+   ],
+   "answer": "前端构建产物放在 `frontend/dist/` 目录。Release 包已包含该目录下的构建产物，手动构建时输出路径同样为 `frontend/dist/`，后端会自动提供该目录下的静态文件 [getting-started__installation#安装与启动-方式一-源码运行-构建前端-可选]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__deployment",
+    "getting-started__installation",
+    "scenarios__帮我做个网页然后上线：从需求描述到生产部署的完整话术"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "frontend/dist/"
+   ],
+   "reason": "系统回答准确给出前端构建产物目录为 frontend/dist/，补充说明与要点一致，未发现编造。"
+  },
+  {
+   "id": "S1-13",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "后端 lifespan 的初始化顺序是什么？",
+   "expected_points": [
+    "数据库初始化→加载配置→共享组件→消息队列→渠道→消息处理→Cron→心跳等顺序"
+   ],
+   "answer": "根据知识库，后端 `lifespan` 的初始化顺序在 `backend/app.py` 中定义，完整步骤如下（来源：[getting-started__installation#安装与启动-方式一-源码运行-启动流程]）：\n\n1. 初始化 SQLite 数据库（`data/countbot.db`）  \n2. 从数据库加载配置到内存  \n3. 创建 `ProviderRegistry`，注册 22 个 LLM provider  \n4. 创建 `MemoryStore`、`SkillsLoader`、`ToolRegistry`、`SubAgentManager`、`AgentLoop`  \n5. 初始化消息队列和速率限制器  \n6. 初始化 `ChannelManager`  \n7. 后台启动已启用的渠道连接  \n8. 启动消息处理器  \n9. 初始化 `CronScheduler`，加载定时任务并启动调度  \n10. 启动心跳问候任务（每 24 小时问候最近活跃的渠道用户）  \n11. 注册定时清理临时文件的后台任务  \n\n该顺序与“部署与运维 > 启动流程”中描述的后端 `lifespan` 步骤（1-9）基本一致，只是后者更简略（来源：[advanced__deployment#部署与运维-启动流程]）。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__auth",
+    "advanced__deployment",
+    "advanced__http-flows__basic-chat-http-flow",
+    "getting-started__installation",
+    "getting-started__quick-reference"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "数据库初始化",
+    "加载配置",
+    "共享组件",
+    "消息队列",
+    "渠道",
+    "消息处理",
+    "Cron",
+    "心跳"
+   ],
+   "reason": "系统回答完整覆盖了参考要点中的初始化顺序，且未发现明显编造。"
+  },
+  {
+   "id": "S1-14",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "CountBot 内置支持多少个模型 provider？",
+   "expected_points": [
+    "22 个"
+   ],
+   "answer": "根据提供的知识库内容，仅说明了 CountBot 的 LLM 提供商子系统包含抽象基类、Provider 工厂、注册表元数据和“两套具体 Provider 实现”，但并未明确说明“内置支持多少个模型 provider”的具体数量。因此无法从该内容中得出确切答案。\n\n来源：[core__providers#llm-提供商]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "about",
+    "advanced__http-flows__multi-turn-conversation",
+    "core__im-commands",
+    "core__providers",
+    "releases__v0.7.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有具体数量并拒绝回答，未提供答案。"
+  },
+  {
+   "id": "S1-15",
+   "type": "single_doc",
+   "semantic": false,
+   "question": "Cron 定时任务底层用什么调度库实现？",
+   "expected_points": [
+    "APScheduler"
+   ],
+   "answer": "根据知识库内容，Cron 定时任务底层使用 **APScheduler** 库中的 **AsyncIOScheduler** 实现。  \n来源：[core__cron#定时任务-概述] 指出“基于 AsyncIOScheduler”；[core__cron#定时任务] 也说明“CountBot 内置基于 APScheduler 的定时任务系统”。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "core__cron"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "APScheduler"
+   ],
+   "reason": "系统回答正确指出底层使用 APScheduler，并补充了 AsyncIOScheduler 实现细节，符合参考要点"
+  },
+  {
+   "id": "S1-16",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "我想让 CountBot 到点自动干活，不用我发消息触发，能做到吗？",
+   "expected_points": [
+    "Cron 定时任务功能",
+    "APScheduler 调度"
+   ],
+   "answer": "能做到。CountBot 支持定时调度，可以在设定时间自动执行任务并推送消息，无需你每次手动发消息触发。知识库中示例：“每天早上 8 点生成早报，除了发消息给我之外，还要做成一个精美的网页并部署到线上，把链接也发给我。”[scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧#每天早上一条消息搞定全天-ai-早报自动生成的场景与调度技巧-进阶玩法-早报-网页部署]\n\nCountBot 还会按你指定的时间自动推送早报到飞书群、Telegram、QQ、网页端等渠道。[scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧#每天早上一条消息搞定全天-ai-早报自动生成的场景与调度技巧-提示词技巧-打造个性化早报-技巧四-多渠道推送]\n\n因此，你可以直接给 CountBot 设置类似“每天早上 8 点自动运行 XX 任务”的指令，让它到点自动干活。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "about",
+    "advanced__http-api-deep-dive",
+    "index",
+    "scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "定时任务功能"
+   ],
+   "reason": "回答了支持定时调度自动执行，但未提及参考要点中的Cron定时任务和APScheduler调度具体实现。"
+  },
+  {
+   "id": "S1-17",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "CountBot 能在新的一次对话里想起我上次跟它说过的话吗？靠什么机制？",
+   "expected_points": [
+    "长期记忆机制",
+    "跨会话记忆存储"
+   ],
+   "answer": "能。CountBot 可以在新对话中想起之前的内容，主要靠**会话总结机制 / 自动记忆触发**：当会话达到一定条件（如 30 条消息或 15000 字符）时，会自动将旧消息总结并保存到长期记忆系统；之后在新的对话中，系统会把历史总结作为 system 消息注入上下文，例如：\n\n```\n{\"role\": \"system\", \"content\": \"[会话总结] 用户询问了北京天气...\"}\n```\n\n这样 AI 就能据此回答“还记得我们之前讨论的天气吗？”。  \n来源：[advanced__http-api-deep-dive#http-api-深度解析-1-基础对话流程-countbot-特色功能]、[advanced__http-api-deep-dive#http-api-深度解析-8-多轮对话和上下文管理-完整对话示例-第-3-轮-30-轮后-有会话总结]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "index",
+    "releases__v0.8.0"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "长期记忆机制",
+    "跨会话记忆存储"
+   ],
+   "reason": "系统回答明确说明了通过会话总结保存到长期记忆并在新对话注入历史总结，覆盖参考要点。"
+  },
+  {
+   "id": "S1-18",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "一件复杂的事能让几个 AI 角色接力完成吗？",
+   "expected_points": [
+    "Agent 团队功能",
+    "多角色协作"
+   ],
+   "answer": "可以。CountBot 的智能体团队支持 pipeline、graph、council 等协作模式，用来“拆分复杂任务、组织多角色协作和汇总结果”。其中 pipeline 等模式可让多个 AI 角色分工协作，实现类似“接力”完成复杂任务的效果。  \n另外，设计建议强调“角色职责尽量单一”“不要在一个成员里塞过多目标”，因此把复杂事拆给多个角色是合理做法。\n\n来源：  \n- [core__agent-teams#智能体团队-设计建议](core__agent-teams#智能体团队-设计建议)  \n- [index#countbot-当前产品结构-3-智能体团队](index#countbot-当前产品结构-3-智能体团队)",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__prompt-optimization-guide",
+    "core__agent-teams",
+    "core__skills-creation",
+    "index",
+    "scenarios__帮我搜一下最近AI有什么新动态：多源信息聚合的场景与检索技巧"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "Agent 团队功能",
+    "多角色协作"
+   ],
+   "reason": "回答明确说明了智能体团队支持多角色协作和拆分复杂任务，覆盖参考要点，且无编造。"
+  },
+  {
+   "id": "S1-19",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "我平时在终端里用 AI 编码工具写代码，CountBot 能直接调用它吗？",
+   "expected_points": [
+    "外部编码工具集成（Claude Code/Codex 等）"
+   ],
+   "answer": "可以。CountBot 支持把你在终端里使用的 AI 编码 CLI 工具（如 Claude、Codex、OpenCode）接入系统，作为外部编码执行层；并可设置为 IM 渠道账号的默认路由，让消息直接进入编码工作流。[index#countbot-当前产品结构-5-外部编程工具] [core__external-coding-tools#外部编码工具]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "core__external-coding-tools",
+    "core__im-commands",
+    "getting-started__installation",
+    "index"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "外部编码工具集成"
+   ],
+   "reason": "系统回答明确说明可接入终端AI编码CLI工具并覆盖参考要点"
+  },
+  {
+   "id": "S1-20",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "同事想在他自己的电脑上打开我的 CountBot 页面来用，行得通吗？",
+   "expected_points": [
+    "远程访问方案",
+    "局域网/公网暴露与认证"
+   ],
+   "answer": "可以。CountBot 支持通过远程访问方式运行，使其他电脑能打开页面。\n\n- 启动时设置 `COUNTBOT_HOST=0.0.0.0` 即可开启远程访问，然后通过 `http://<Network 地址>:8000` 访问；例如输出中的 `http://192.168.1.100:8000/setup/akLRzvlW` [advanced__auth#远程访问认证-远程初始化-示例]。\n- 同事在自己电脑上打开页面后，通常需要完成管理员初始化或登录；远程初始化必须携带合法的 setup secret [getting-started__troubleshooting#常见问题排查-认证与远程访问-远程打开页面后提示需要初始化认证]。\n- 页面静态资源可以打开，但受保护的 API 操作需要认证后才能正常使用 [advanced__remote-access#远程访问指南-五-常见问题-q4-根路径能打开但-api-返回-401]。\n\n因此，只要你的 CountBot 以远程访问模式启动、同事能访问你的网络地址，并且他通过认证/初始化流程，就可以在他自己电脑上使用。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__auth",
+    "advanced__remote-access",
+    "getting-started__troubleshooting",
+    "index",
+    "releases__v0.3.0",
+    "releases__v0.4.0"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "远程访问方案",
+    "局域网/公网暴露与认证"
+   ],
+   "reason": "系统回答提供了远程访问启动方式并说明了认证流程，覆盖参考要点"
+  },
+  {
+   "id": "S1-21",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "知识库文档越存越多，查询会越来越慢吗？",
+   "expected_points": [
+    "Wiki LRU 缓存机制",
+    "缓存容量 128 个文档，重复查询性能提升"
+   ],
+   "answer": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-flows__system-prompt-construction",
+    "advanced__http-flows__tool-call-http-flow",
+    "releases__v0.7.0",
+    "releases__v0.9.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有相关内容，属于拒绝回答。"
+  },
+  {
+   "id": "S1-22",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "我有好几个 API Key，一个额度用完了能自动换下一个吗？",
+   "expected_points": [
+    "API Key 轮换机制",
+    "401/429 触发自动切换"
+   ],
+   "answer": "是的，可以自动切换。只要你在 Provider 配置中设置了多个 API Key，当某个 Key 触发 **401（认证错误）或 429（限流）** 等错误时，系统会自动切换到下一个 Key 重试，无需手动干预。该机制在 v0.9.0 中作为核心更新引入，并具备线程安全的多 Key 轮换与故障转移能力 [releases__v0.9.0#countbot-v0-9-0-核心更新-5-api-key-轮换机制]。Agent Loop 中同样实现了这一行为：配置多个 Key 时，遇到认证或限流错误会自动切换下一个 Key 重试，最多尝试 3 次 [core__agent-loop#agent-loop-api-key-轮换]。\n\n不过，如果是额度用尽，需要看该错误是否表现为 401/429 或其他可触发故障转移的状态码；知识库中未明确说明“额度耗尽”对应的具体错误码，因此建议优先确认后端日志给出的错误信息 [getting-started__troubleshooting#常见问题排查-模型与配置-api-key-无效或测试失败]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__remote-access",
+    "core__agent-loop",
+    "core__external-coding-tools",
+    "getting-started__troubleshooting",
+    "releases__v0.9.0"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "API Key 轮换机制",
+    "401/429 触发自动切换"
+   ],
+   "reason": "系统回答准确覆盖了API Key轮换机制及401/429触发切换的要点，并补充了额度耗尽需根据具体错误码判断。"
+  },
+  {
+   "id": "S1-23",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "我在两个不同的群里分别跟 CountBot 聊，它会把两边的话题记混吗？",
+   "expected_points": [
+    "会话按渠道/聊天隔离",
+    "channels 会话作用域"
+   ],
+   "answer": "根据现有知识库内容，**没有明确说明** CountBot 在两个不同的群聊中是否会“记混”话题。\n\n知识库中提到了相关设计：\n\n- “同一实例可以接入多个 IM 渠道；同一渠道下又可以配置多个账号，分别服务不同团队、群组或业务线。”  \n  [index#countbot-当前产品结构-4-渠道与机器人]\n\n- v0.4.0 开始支持“会话级配置”，不同会话可以拥有各自独立的模型提供商、模型选择、提示词与人格设定。  \n  [releases__v0.4.0#countbot-v0-4-0-发布说明-核心更新-1-会话级配置正式成为一等能力]\n\n这些内容说明 CountBot 可以按群组/会话进行区分和独立配置，但**并未直接说明对话上下文或话题记忆是否会跨会话隔离**。因此，无法依据当前知识库可靠判断它是否会记混两个群的话题。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "about",
+    "index",
+    "releases__v0.4.0"
+   ],
+   "verdict": "wrong",
+   "covered": [],
+   "reason": "参考要点明确会话按渠道/聊天隔离，系统回答却称知识库无明确说明且无法判断，结论与要点不符。"
+  },
+  {
+   "id": "S1-24",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "聊到一半想抛开前面的话题重新开始，有什么办法？",
+   "expected_points": [
+    "/new 等斜杠命令重开会话"
+   ],
+   "answer": "可以使用 `/new` 命令来创建一个新的会话上下文，从而抛开前面的话题，重新开始一段独立对话。它适合开新任务、避免旧上下文污染，或直接重新开启对话。[core__im-commands#im-命令-会话管理命令-new]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows",
+    "advanced__http-flows__multi-turn-conversation",
+    "core__im-commands",
+    "scenarios__帮我规划一趟旅行：多技能联动的复合任务拆解与编排技巧"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "/new 等斜杠命令重开会话"
+   ],
+   "reason": "系统回答准确覆盖了使用 /new 命令重开会话的要点，无编造内容。"
+  },
+  {
+   "id": "S1-25",
+   "type": "single_doc",
+   "semantic": true,
+   "question": "升级到新版本的时候，我之前的会话和记忆还能保住吗？",
+   "expected_points": [
+    "升级保留数据",
+    "backup/数据兼容说明"
+   ],
+   "answer": "根据提供的 Wiki 知识库内容，**没有明确说明升级后之前的会话和记忆是否能保留**。仅在 CountBot v0.3.0 的升级提示中建议“在升级前备份数据库和工作空间内容”，这暗示数据可能受影响，但并未直接回答会话与记忆的保留情况 [releases__v0.3.0#countbot-v0-3-0-发布说明-升级提示]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "releases__v0.3.0",
+    "releases__v0.4.0",
+    "releases__v0.7.0",
+    "releases__v0.8.0",
+    "releases__v0.9.0"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "backup/数据兼容说明"
+   ],
+   "reason": "系统回答仅提到升级前备份建议，未覆盖升级保留数据的关键说明，且称知识库未明确说明。"
+  },
+  {
+   "id": "S2-01",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "怎么配置 CountBot 每天早上 8 点自动搜索新闻并发送到 Telegram？",
+   "expected_points": [
+    "Cron 定时任务配置",
+    "Telegram 渠道配置",
+    "搜索技能与消息发送联动"
+   ],
+   "answer": "可以按以下步骤配置 CountBot 每天早上 8 点自动搜索新闻并发送到 Telegram：\n\n1. **在 Web UI 中通过 cron-manager 技能创建定时任务**  \n   直接输入类似指令：  \n   `请帮我创建一个定时任务，每天早上 8 点发送新闻摘要到 Telegram`  \n   技能会自动创建任务并添加到调度器。  \n   来源：[core__cron#定时任务-使用方式-1-通过技能管理-推荐]\n\n2. **确认 Cron 调度配置**  \n   定时任务的 Schedule 应为 `0 8 * * *`（每天早上 8 点）；Message 部分可以写明需要执行的新闻搜索与整合步骤，例如“获取 5 条 AI 技术新闻”“获取 5 条热点新闻”等，最后整合为一条消息推送给用户。  \n   来源：[scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧#每天早上一条消息搞定全天-ai-早报自动生成的场景与调度技巧-场景拆解-一条早报的诞生-cron-调度配置]\n\n3. **确保 Telegram 渠道可用**  \n   CountBot 支持多渠道接入，Telegram 适合个人使用，并支持 Markdown 格式。配置好 Telegram 渠道后，定时任务推送的内容即可通过该渠道发送。  \n   来源：[scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧#每天早上一条消息搞定全天-ai-早报自动生成的场景与调度技巧-提示词技巧-打造个性化早报-技巧四-多渠道推送]\n\n如果还需要将早报同步发送到其他平台（如飞书、QQ 或网页端），也可以在指令中说明，CountBot 会按渠道配置进行推送。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "core__cron",
+    "getting-started__ChannelConfig",
+    "scenarios__每天早上一条消息搞定全天：AI早报自动生成的场景与调度技巧"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "Cron 定时任务配置",
+    "Telegram 渠道配置",
+    "搜索技能与消息发送联动"
+   ],
+   "reason": "系统回答覆盖了定时任务Cron配置、Telegram渠道配置以及新闻搜索与消息发送联动三个要点，且内容与参考要点一致"
+  },
+  {
+   "id": "S2-02",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "我在家用桌面版运行 CountBot，出差在外能用手机浏览器访问吗？",
+   "expected_points": [
+    "远程访问方案",
+    "桌面版运行特点",
+    "认证与安全"
+   ],
+   "answer": "不能。\n\n根据知识库中的说明，CountBot 的**桌面预编译版（如 .exe 安装包）不支持通过环境变量修改监听地址，无法开启远程访问模式**。因此，如果你在家用的是桌面预编译版，出差在外无法用手机浏览器进行远程访问。如需远程访问，需改用**源码版本**启动，并设置 `COUNTBOT_HOST=0.0.0.0` 等参数开启远程访问，再通过认证后访问。\n\n来源：\n- [advanced__auth#远程访问认证](advanced__auth#远程访问认证)\n- [getting-started__update-guide#countbot-更新指南-源码覆盖-github-命令升级与桌面版更新-方式三-下载桌面版更新](getting-started__update-guide#countbot-更新指南-源码覆盖-github-命令升级与桌面版更新-方式三-下载桌面版更新)\n- [advanced__auth#远程访问认证-远程初始化-示例](advanced__auth#远程访问认证-远程初始化-示例)",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__auth",
+    "getting-started__installation",
+    "getting-started__update-guide"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "远程访问方案",
+    "桌面版运行特点",
+    "认证与安全"
+   ],
+   "reason": "系统回答准确说明了桌面预编译版不支持远程访问，并给出改用源码版设置监听地址和认证的远程访问方案，覆盖参考要点且无编造。"
+  },
+  {
+   "id": "S2-03",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "钉钉上配置完成后机器人不回复消息，应该怎么排查？",
+   "expected_points": [
+    "渠道配置检查",
+    "troubleshooting 排查步骤"
+   ],
+   "answer": "根据知识库内容，钉钉机器人不回复时建议按以下步骤排查：\n\n1. **检查是否安装钉钉 Stream 依赖**  \n   需要安装 `dingtalk-stream`，执行：\n   ```bash\n   pip install dingtalk-stream\n   ```\n   如果缺少该 SDK，系统会自动跳过对应渠道，可能导致机器人不工作。  \n   来源：[getting-started__troubleshooting#常见问题排查-渠道接入-钉钉机器人不回复]、[advanced__deployment#部署与运维-故障排查-渠道-sdk-缺失]\n\n2. **检查 Client ID / Client Secret 是否正确**  \n   确认配置中的 `client_id` 和 `client_secret` 是否与钉钉开放平台中的凭据一致。  \n   来源：[getting-started__troubleshooting#常见问题排查-渠道接入-钉钉机器人不回复]\n\n3. **确认 Stream 模式是否已开启**  \n   钉钉机器人需要启用 Stream 模式，请检查对应设置。  \n   来源：[getting-started__troubleshooting#常见问题排查-渠道接入-钉钉机器人不回复]\n\n4. **检查渠道配置是否完整**  \n   参考钉钉渠道配置示例，确保 `enabled` 为 `true`，并正确填写各项字段：\n   ```json\n   {\n     \"channels\": {\n       \"dingtalk\": {\n         \"enabled\": true,\n         \"display_name\": \"主机器人\",\n         \"account_id\": \"default\",\n         \"client_id\": \"你的 Client ID\",\n         \"client_secret\": \"你的 Client Secret\",\n         \"routing_mode\": \"ai\",\n         \"external_coding_profile\": \"\",\n         \"allow_from\": [],\n         \"accounts\": {}\n       }\n     }\n   }\n   ```\n   来源：[getting-started__ChannelConfig#渠道配置-常见渠道字段示例-钉钉]\n\n如果以上均无误但仍不回复，可以进一步查看后端日志中是否有钉钉 worker 相关错误（类似飞书的排查思路）。不过知识库中未明确给出钉钉 worker 日志的具体位置，仅提示检查上述项目。  \n来源：[getting-started__troubleshooting#常见问题排查-渠道接入-飞书机器人不回复]（其中提到“后端日志里是否有飞书 worker 相关错误”，可作参考）",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__deployment",
+    "core__channels",
+    "getting-started__ChannelConfig",
+    "getting-started__troubleshooting"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "渠道配置检查",
+    "troubleshooting 排查步骤"
+   ],
+   "reason": "回答覆盖了渠道配置检查和具体排查步骤，且未编造明显事实"
+  },
+  {
+   "id": "S2-04",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "配置好模型 provider 之后，怎么验证连接是正常的？",
+   "expected_points": [
+    "测试模型连接的方式",
+    "provider 状态检查"
+   ],
+   "answer": "根据知识库，配置好模型 provider 后，可以通过调用 `POST /api/settings/test-connection` 接口来验证连接是否正常；测试通过后再进行对话 [getting-started__configuration-manual#配置手册-provider-与模型-测试连接]。此外，也可以在设置页完成 Provider、API Key、默认模型等配置后，通过该接口测试连接 [getting-started__installation#安装与启动-首次进入后的建议顺序-1-配置模型]。另一种验证方式是到聊天页发送一条简单消息，确认基础对话可用 [getting-started__quick-start-guide#最短启动路径-第二步-配置模型]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "getting-started__configuration-manual",
+    "getting-started__installation",
+    "getting-started__quick-start-guide"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "测试模型连接的方式",
+    "provider 状态检查"
+   ],
+   "reason": "回答给出了测试连接接口和聊天页验证方式，覆盖了参考要点且无编造。"
+  },
+  {
+   "id": "S2-05",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "子代理执行完任务之后，结果是怎么回到主对话里的？",
+   "expected_points": [
+    "子代理结果回传机制",
+    "agent loop 中的汇合点"
+   ],
+   "answer": "根据知识库内容，子代理执行完任务后，结果是这样回到主对话的：\n\n- 子代理完成任务后，会**将结果总结报告给主代理**（子代理的提示词中要求“最终响应会报告给主代理”），同时**更新任务状态、通知主代理、保存到数据库**。\n- 由于子代理**不能直接向用户发送消息**，所以需要由主代理接收子代理的结果，并在主对话中呈现给用户。\n- 另外，前端会通过 **WebSocket** 接收任务状态更新，从而在界面上展示任务结果、进度条等信息。\n\n引用来源：  \n- [advanced__http-api-deep-dive#http-api-深度解析-4-子代理调度流程-子代理架构](advanced__http-api-deep-dive#http-api-深度解析-4-子代理调度流程-子代理架构)  \n- [advanced__http-api-deep-dive#http-api-深度解析-4-子代理调度流程-子代理专用系统提示词](advanced__http-api-deep-dive#http-api-深度解析-4-子代理调度流程-子代理专用系统提示词)  \n- [core__subagent#子代理系统-通知机制-前端展示](core__subagent#子代理系统-通知机制-前端展示)",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "core__subagent"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "子代理结果回传机制",
+    "agent loop 中的汇合点"
+   ],
+   "reason": "系统回答说明了子代理结果由主代理接收并呈现回主对话，基本覆盖回传机制与汇合点且无编造。"
+  },
+  {
+   "id": "S2-06",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "Agent 团队里不同成员想用不同模型，怎么指定优先级？",
+   "expected_points": [
+    "团队成员模型配置",
+    "provider 优先级"
+   ],
+   "answer": "根据现有知识库，**没有找到关于“团队内不同成员分别指定不同模型”的配置或优先级说明**。\n\n目前资料中提到的模型优先级只涉及以下层级：\n\n- 预定义团队工作流：**团队专属模型配置 → 会话模型覆盖 → 全局模型配置 → Provider 元数据默认值**  \n  来源：`core__agent-teams#智能体团队-会话配置-团队配置-全局配置的优先级-预定义团队工作流`\n\n- 普通会话：**会话自定义配置 → 全局 Provider 配置 → Provider 默认元数据**  \n  来源：`getting-started__quick-reference#快速参考-会话-团队与路由速记-模型优先级`\n\n也就是说，知识库只支持“团队级”“会话级”“全局级”的模型优先级设置，未提及团队成员（`agents[]`）单独配置模型的能力。团队成员字段主要涉及 `role`、`system_prompt`、`task`、`perspective` 等，但其中没有模型字段。  \n来源：`core__agent-teams#智能体团队-这章解决什么问题`\n\n因此，若要让不同成员使用不同模型，当前知识库内容无法提供具体方案。建议查看是否支持在成员字段中扩展模型配置，或考虑将不同模型需求拆分为多个独立团队/会话来间接实现。",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "core__agent-team-manager",
+    "core__agent-teams",
+    "getting-started__quick-reference"
+   ],
+   "verdict": "refused",
+   "covered": [
+    "provider 优先级"
+   ],
+   "reason": "回答明确表示知识库中没有团队成员单独配置模型的内容，拒绝提供具体方案，仅提及现有模型优先级中的provider层级。"
+  },
+  {
+   "id": "S2-07",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "CountBot 执行 Shell 命令有什么安全限制？怎么防止危险命令？",
+   "expected_points": [
+    "Shell 工具限制",
+    "安全机制（确认/黑名单等）"
+   ],
+   "answer": "CountBot 的 Shell 命令执行有多层安全限制，主要包括：\n\n- **危险命令模式拦截**：内置 `DANGEROUS_PATTERNS` 危险命令库，例如 `rm -rf /`、`mkfs.`、`dd if=`、Fork 炸弹、`> /dev/sd*` 等会被直接阻止。[advanced__http-api-deep-dive#http-api-深度解析-6-shell-命令执行-危险命令检测] [core__tools#工具系统-内置工具-shell-工具-安全机制]\n- **自定义拒绝模式与可选白名单**：可通过 `custom_deny_patterns` 增加自定义拒绝规则；启用 `custom_allow_patterns` 后，只允许匹配白名单的命令执行。[advanced__security#安全体系-shell-命令防护] [core__tools#工具系统-内置工具-shell-工具-安全机制]\n- **工作空间隔离**：设置 `restrict_to_workspace=True` 时，命令的工作目录（cwd）必须位于工作空间内，限制影响范围。[core__tools#工具系统-内置工具-shell-工具-安全机制] [advanced__security#安全体系-shell-命令防护]\n- **超时与输出长度限制**：默认 30 秒超时，可配置；超过 `max_output_length`（默认 10000 字符）时自动截断，防止命令卡死或内存溢出。[core__tools#工具系统-内置工具-shell-工具-安全机制] [advanced__http-api-deep-dive#http-api-深度解析-6-shell-命令执行-countbot-特色功能]\n- **完整审计与友好错误提示**：记录所有命令执行以供安全审查，并提供详细错误信息和退出码。[advanced__http-api-deep-dive#http-api-深度解析-6-shell-命令执行-countbot-特色功能]\n\n例如请求执行 `rm -rf /` 时会返回：`Error: Command blocked for security reasons. Command: rm -rf / Reason: Matches dangerous pattern`。[advanced__http-api-deep-dive#http-api-深度解析-6-shell-命令执行-完整执行示例-危险命令被阻止]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__security",
+    "core__tools"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "Shell 工具限制",
+    "安全机制（黑名单/白名单）"
+   ],
+   "reason": "系统回答覆盖了危险命令拦截、自定义黑白名单、工作空间隔离、超时与输出限制等要点，与参考要点基本一致且无编造。"
+  },
+  {
+   "id": "S2-08",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "MCP 工具和外部编码工具（比如 Claude Code）有什么区别？分别什么场景用？",
+   "expected_points": [
+    "MCP 集成方式",
+    "外部编码工具定位",
+    "两者适用场景差异"
+   ],
+   "answer": "根据提供的知识库内容，**没有关于“MCP 工具”的任何定义或说明**，因此无法进行完整的对比。知识库中只涉及“外部编码工具”的介绍：\n\n- 外部编码工具是把 Claude Code、Codex CLI、OpenCode 等**命令行编码工具**接入系统，作为一个“可配置的编码执行层”，适合承接编码、调试、重构、命令执行等任务，也可以作为某个 IM 渠道账号的默认目标 [core__external-coding-tools#外部编码工具]。\n- 它通过 `workspace/external_coding_tools.json` 配置文件定义工具的命令、参数、会话模式等 [core__external-coding-tools#外部编码工具-配置文件]。\n\n关于“MCP 工具”与“外部编码工具”的区别及各自适用场景，知识库中没有相关内容，建议提供 MCP 工具的补充资料或查阅更完整的文档。",
+   "refused_keyword": true,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "core__external-coding-tools"
+   ],
+   "verdict": "refused",
+   "covered": [
+    "外部编码工具定位"
+   ],
+   "reason": "明确表示知识库中没有MCP工具内容，未覆盖MCP集成方式与场景差异"
+  },
+  {
+   "id": "S2-09",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "什么前提下才能把消息路由到 direct 模式直接给编码工具处理？",
+   "expected_points": [
+    "/route direct 命令",
+    "使用前提（需配置编码工具）"
+   ],
+   "answer": "要把消息路由到 `direct` 模式直接给编码工具处理，前提是**该渠道账号已经绑定有效的 `external_coding_profile`**；否则渠道配置保存时就会校验失败，后端会直接拒绝这份渠道配置。\n\n来源：  \n- [core__channels#渠道与机器人-与外部编码工具的关系](core__channels#渠道与机器人-与外部编码工具的关系)  \n- [core__external-coding-tools#外部编码工具-与渠道默认路由的关系-routing_mode-direct](core__external-coding-tools#外部编码工具-与渠道默认路由的关系-routing_mode-direct)  \n- [getting-started__ChannelConfig#渠道配置-routing_mode-和-external_coding_profile-怎么生效-direct](getting-started__ChannelConfig#渠道配置-routing_mode-和-external_coding_profile-怎么生效-direct)",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "core__channels",
+    "core__external-coding-tools",
+    "core__im-commands",
+    "getting-started__ChannelConfig",
+    "getting-started__quick-reference"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "需配置编码工具"
+   ],
+   "reason": "系统回答覆盖了需配置编码工具这一前提，但未提及 /route direct 命令这一要点。"
+  },
+  {
+   "id": "S2-10",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "一个会话聊得特别长，系统会发生什么？",
+   "expected_points": [
+    "历史窗口限制",
+    "自动总结触发（30 条/15000 字符）",
+    "auto-overflow 记忆"
+   ],
+   "answer": "根据您提供的知识库内容，**没有直接说明“一个会话聊得特别长，系统会发生什么”**。\n\n知识库中只提到了与长对话相关的部分信息，例如：\n\n- 提供了手动创建会话总结的 API 示例，表明存在“会话总结”机制，但未描述系统自动处理长会话的行为 [advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-会话总结注入-手动创建会话总结]。\n- 有“会话管理”的小节标题，但没有具体正文 [advanced__http-api-deep-dive#http-api-深度解析-8-多轮对话和上下文管理-会话管理]。\n- v0.8.0 版本中提到“需要长时间运行 AI 助手或 Agent 系统”“有大量长对话场景，需要更好的上下文管理”“注重记忆沉淀和信息复用”，但同样没有说明具体会发生什么 [releases__v0.8.0#countbot-v0-8-0-适用场景]。\n\n因此，仅凭当前知识库内容，无法准确回答该问题。建议补充相关文档后再次询问。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "api-reference",
+    "core__agent-teams",
+    "core__im-commands",
+    "releases__v0.8.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有直接说明长会话会发生什么，拒绝回答，未覆盖历史窗口限制、自动总结触发和auto-overflow记忆等要点。"
+  },
+  {
+   "id": "S2-11",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "把 CountBot 部署在局域网给全组使用，有哪些安全注意事项？",
+   "expected_points": [
+    "认证机制",
+    "API Key 保护",
+    "网络安全配置"
+   ],
+   "answer": "根据提供的知识库内容，将 CountBot 部署在局域网给全组使用时，需注意以下安全事项：\n\n- **明确网络暴露范围与默认监听限制**：CountBot 默认只监听本机回环地址（`127.0.0.1:8000`），仅本机可访问。若要提供给局域网全组使用，需主动修改监听配置以允许局域网访问，但应避免直接暴露到公网，否则会引入公网扫描和未认证访问的噪音与风险 [advanced__remote-access#远程访问指南-一-局域网访问配置-1-1-启动参数] [releases__v0.6.0#countbot-v0-6-0-发布说明-适用场景]。\n\n- **防止未认证访问，尤其是首次初始化过程**：v0.6.0 针对“尚未设置密码时如何安全远程初始化”引入了受控方案：启动时为未初始化实例生成随机远程入口，形态为 `/setup/<随机路径>`，远程初始化必须携带合法 secret 才能完成，且初始化成功后入口立即失效。该机制避免了长期暴露固定初始化入口，可降低未认证扫描风险；部署时需利用此机制并确保初始化完成后入口失效 [releases__v0.6.0#countbot-v0-6-0-发布说明-核心更新-2-远程首次初始化安全模型完成落地]。\n\n- **评估公网/局域网扫描与日志噪音**：v0.6.0 的适用场景明确包括“需要把 CountBot 暴露给局域网或公网入口”和“需要降低公网扫描和未认证访问造成的日志噪音”，说明暴露网络入口后会面临扫描和噪音问题，需要采取相应措施（如网络隔离、访问控制、日志过滤等）来缓解 [releases__v0.6.0#countbot-v0-6-0-发布说明-适用场景]。\n\n- **遵守部署环境的安全与合规要求**：CountBot 使用说明强调，使用者需自行确认目标平台、模型服务商与部署环境的访问规则、安全要求和法律约束。在局域网内部署时同样需要遵守所在组织的网络与信息安全规范，并确认是否允许将消息接入编码工作流等操作 [about#关于-countbot-使用说明]。\n\n- **保持可控的私有网络运行环境**：CountBot 的适用场景之一是“在本地或私有网络中运行可控的 AI Agent 系统”，这要求将系统限制在可信网络中，同时对多角色、多机器人、多渠道协作环境做好权限管理，避免被非授权人员利用 [index#countbot-适合哪些场景]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "about",
+    "advanced__deployment",
+    "advanced__remote-access",
+    "index",
+    "releases__v0.6.0"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "认证机制",
+    "网络安全配置"
+   ],
+   "reason": "覆盖了认证机制与网络安全配置，但未提及API Key保护要点。"
+  },
+  {
+   "id": "S2-12",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "升级到新版本之前需要做哪些准备工作？",
+   "expected_points": [
+    "备份",
+    "依赖更新",
+    "数据迁移注意事项"
+   ],
+   "answer": "根据知识库内容，升级到新版本前应做好以下准备工作：\n\n- **先停止当前正在运行的 CountBot**：无论采用何种更新方式，都应先停止服务，以避免 SQLite 锁库或文件更新不完整。  \n  停止方式：源码运行在终端按 `Ctrl+C`；桌面版完全退出程序；systemd 部署执行 `sudo systemctl stop CountBot`。  \n  来源：[getting-started__update-guide#countbot-更新指南-源码覆盖-github-命令升级与桌面版更新-更新前必须先做的事]\n\n- **备份数据库和工作空间内容**：升级前建议备份数据库和工作空间内容，同时如果已有定时任务，升级后重新检查任务配置和重试行为；如果使用了自定义技能，也应审查技能配置项是否符合新的结构化要求。  \n  来源：[releases__v0.3.0#countbot-v0-3-0-发布说明-升级提示]\n\n- **建议先在测试环境验证**：生产环境升级前，建议先在测试环境进行验证。  \n  来源：[releases__v0.8.0#countbot-v0-8-0-升级提示]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "getting-started__update-guide",
+    "releases__v0.3.0",
+    "releases__v0.7.0",
+    "releases__v0.8.0",
+    "releases__v0.9.0"
+   ],
+   "verdict": "partial",
+   "covered": [
+    "备份"
+   ],
+   "reason": "系统回答覆盖了备份，但遗漏了依赖更新和数据迁移注意事项两个关键要点。"
+  },
+  {
+   "id": "S2-13",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "能在 Web 界面上创建定时任务吗，还是只能改配置文件？",
+   "expected_points": [
+    "Web 界面任务管理",
+    "cron 任务创建方式"
+   ],
+   "answer": "可以在 Web 界面上创建定时任务，无需直接修改配置文件。\n\n- 在 Web UI 中可以使用 cron-manager 技能，通过对话形式（如「请帮我创建一个定时任务，每天早上 8 点发送新闻摘要到 Telegram」）让技能自动创建任务并添加到调度器。[core__cron#定时任务-使用方式-1-通过技能管理-推荐]\n- 系统也提供了完整的任务 API（如 `POST /api/cron/jobs`），可用于创建任务；任务配置存储在 SQLite 数据库中，而非配置文件。[getting-started__configuration-manual#配置手册-定时任务-任务-api] [core__cron#定时任务-概述]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "core__cron",
+    "core__skills-creation",
+    "getting-started__configuration-manual"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "Web 界面任务管理",
+    "cron 任务创建方式"
+   ],
+   "reason": "回答明确说明可在Web界面创建定时任务并给出了对话技能和API两种创建方式，覆盖参考要点且未发现编造。"
+  },
+  {
+   "id": "S2-14",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "不想用云端的 API，能不能完全在本地跑模型来用 CountBot？",
+   "expected_points": [
+    "本地模型支持（Ollama 等）",
+    "provider 配置方式",
+    "性能取舍"
+   ],
+   "answer": "根据现有 Wiki 知识库内容，**无法明确确认 CountBot 支持完全在本地跑模型、完全不使用云端 API**。\n\n能查到的是：\n\n- CountBot 被定位为“面向本地部署、私有业务和持续运行场景的 AI Agent 运行环境”[index#countbot]，项目定位也强调“面向本地部署与私有场景”[about#关于-countbot-项目定位]。\n- 但这里的“本地部署”主要指 CountBot 运行环境本身、团队协作、渠道账号、技能任务等可以本地可控，并没有明确说明它是否支持接入本地推理模型（如 Ollama、llama.cpp 等）。\n- 在 v0.9.0 的适用场景中提到“同时使用多个 API Key，需要自动轮换与故障转移”[releases__v0.9.0#countbot-v0-9-0-适用场景]，HTTP API 介绍中也有“节省 token 消耗”这类与外部模型 API 相关的描述[advanced__http-api-deep-dive#http-api-深度解析-1-基础对话流程-countbot-特色功能]，间接说明它当前更可能是配合外部模型/API 使用。\n\n因此，知识库中**没有足够信息能够回答“能否完全本地跑模型来用 CountBot”**，建议查阅项目官方文档或直接向项目维护者确认。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": false,
+   "retrieved_docs": [
+    "about",
+    "advanced__auth",
+    "advanced__http-api-deep-dive",
+    "index",
+    "releases__v0.9.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答以知识库信息不足为由拒绝确认，未覆盖本地模型支持、provider配置和性能取舍等评分要点"
+  },
+  {
+   "id": "S2-15",
+   "type": "cross_doc",
+   "semantic": false,
+   "question": "用 /route 和 /coder 切换了路由之后，这些切换会记录进会话历史吗？",
+   "expected_points": [
+    "命令是否写入历史",
+    "会话状态保持方式"
+   ],
+   "answer": "根据提供的知识库内容，**没有说明**使用 `/route` 和 `/coder` 切换路由后是否会记录进会话历史。\n\n知识库仅提到：\n\n> 命令覆盖只影响当前聊天，不会修改后台保存的默认值。[core__im-commands#im-命令-route-和-coder-的关系-当前聊天临时值]\n\n但未提及这些切换操作是否进入会话历史记录。因此，无法从该知识库中确认这一点。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "core__im-commands"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库未说明切换是否写入会话历史，无法确认，属于拒绝回答"
+  },
+  {
+   "id": "S3-01",
+   "type": "needle",
+   "semantic": false,
+   "question": "会话达到多少条消息会触发自动总结？",
+   "expected_points": [
+    "30 条"
+   ],
+   "answer": "根据知识库内容，会话达到 **30 条消息** 会触发自动总结。  \n来源：  \n- [advanced__http-api-deep-dive#http-api-深度解析-8-多轮对话和上下文管理-会话总结机制-自动总结触发条件]：`msg_count >= 30` 时触发。  \n- [advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-自动记忆写入-触发条件]：消息数 >= 30 条时自动触发记忆写入。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "core__memory"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "30 条消息触发自动总结"
+   ],
+   "reason": "系统回答准确给出会话达到30条消息触发自动总结，与参考要点一致且无编造。"
+  },
+  {
+   "id": "S3-02",
+   "type": "needle",
+   "semantic": false,
+   "question": "自动总结的字符数阈值是多少？",
+   "expected_points": [
+    "15000 字符"
+   ],
+   "answer": "根据 Wiki 知识库，自动总结的字符数阈值是 **15000**。例如，在代码中 `total_chars >= 15000` 即触发自动总结，多个相关章节均一致说明此阈值。[advanced__http-api-deep-dive#http-api-深度解析-8-多轮对话和上下文管理-会话总结机制-自动总结触发条件]、[advanced__http-flows__multi-turn-conversation#多轮对话的-messages-数组演变-自动记忆写入-触发条件]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "core__memory"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "15000字符"
+   ],
+   "reason": "回答准确给出了自动总结的字符数阈值为15000字符，与参考要点一致。"
+  },
+  {
+   "id": "S3-03",
+   "type": "needle",
+   "semantic": false,
+   "question": "子代理最多允许迭代多少轮？",
+   "expected_points": [
+    "15"
+   ],
+   "answer": "根据知识库内容，子代理的最大迭代次数为 **15 轮**，由配置参数 `max_iterations` 控制 [core__subagent#子代理系统-配置参数]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__agent-system-design-guide",
+    "core__subagent",
+    "scenarios__帮我规划一趟旅行：多技能联动的复合任务拆解与编排技巧"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "子代理最多迭代15轮"
+   ],
+   "reason": "回答准确给出了子代理最大迭代次数为15轮，与参考要点一致。"
+  },
+  {
+   "id": "S3-04",
+   "type": "needle",
+   "semantic": false,
+   "question": "Wiki 知识库的 LRU 缓存容量是多少个文档？",
+   "expected_points": [
+    "128"
+   ],
+   "answer": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "api-reference",
+    "core__memory",
+    "releases__v0.9.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有找到与该问题相关的内容，属于拒绝回答。"
+  },
+  {
+   "id": "S3-05",
+   "type": "needle",
+   "semantic": false,
+   "question": "v0.9.0 的心跳问候优化把每次的 LLM 调用次数从几次降到了几次？",
+   "expected_points": [
+    "从 2 次降到 1 次"
+   ],
+   "answer": "v0.9.0 的心跳问候优化将每次问候触发的 LLM 调用次数从 **2 次**降为 **1 次**。\n\n> 来源：releases__v0.9.0#countbot-v0-9-0-核心更新-4-心跳问候逻辑简化  \n> “去掉冗余的 LLM 决策层，问候触发从 2 次调用降为 1 次”",
+   "refused_keyword": false,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "releases__v0.4.0",
+    "releases__v0.8.0",
+    "releases__v0.9.0"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "从 2 次降到 1 次"
+   ],
+   "reason": "系统回答准确覆盖了参考要点中的调用次数变化，且未编造内容。"
+  },
+  {
+   "id": "S3-06",
+   "type": "needle",
+   "semantic": false,
+   "question": "API Key 轮换是在收到哪些 HTTP 状态码时触发的？",
+   "expected_points": [
+    "401 和 429"
+   ],
+   "answer": "API Key 轮换是在收到 **401**（认证错误）和 **429**（限流错误）等 HTTP 状态码时触发的。[core__agent-loop#agent-loop-api-key-轮换] [releases__v0.9.0#countbot-v0-9-0-核心更新-5-api-key-轮换机制]",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__remote-access",
+    "core__agent-loop",
+    "core__external-coding-tools",
+    "getting-started__troubleshooting",
+    "releases__v0.9.0"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "401 和 429"
+   ],
+   "reason": "系统回答准确给出了触发 API Key 轮换的 401 和 429 状态码，与参考要点一致。"
+  },
+  {
+   "id": "S3-07",
+   "type": "needle",
+   "semantic": false,
+   "question": "CountBot 内置支持多少个模型 provider？",
+   "expected_points": [
+    "22 个"
+   ],
+   "answer": "根据提供的知识库内容，无法得知 CountBot 内置支持多少个模型 provider。知识库仅介绍了 LLM 提供商子系统的设计结构，未列出具体数量 [core__providers#llm-提供商]。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "about",
+    "advanced__http-flows__multi-turn-conversation",
+    "core__im-commands",
+    "core__providers",
+    "releases__v0.7.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中未列出具体数量，无法得知，属于拒绝回答而非给出错误答案。"
+  },
+  {
+   "id": "S3-08",
+   "type": "needle",
+   "semantic": false,
+   "question": "SQLite 数据库文件叫什么名字？定时任务存在哪张表里？",
+   "expected_points": [
+    "countbot.db",
+    "cron_jobs 表"
+   ],
+   "answer": "SQLite 数据库文件名为 `data/countbot.db`（来源：advanced__deployment#部署与运维-数据库）。定时任务存储在 `cron_jobs` 表中（来源：core__cron#定时任务-数据库存储）。",
+   "refused_keyword": false,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__deployment",
+    "core__cron"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "countbot.db",
+    "cron_jobs 表"
+   ],
+   "reason": "回答覆盖了数据库文件名（以路径形式给出）和定时任务存储表，未发现明显编造。"
+  },
+  {
+   "id": "S3-09",
+   "type": "needle",
+   "semantic": false,
+   "question": "Telegram 的代理设置支持什么协议？",
+   "expected_points": [
+    "socks5://"
+   ],
+   "answer": "Telegram 代理设置支持 **socks5** 和 **http** 协议。  \n来源：getting-started__troubleshooting#常见问题排查-渠道接入-telegram-无法连接",
+   "refused_keyword": false,
+   "has_citation": false,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "advanced__agent-system-design-guide",
+    "core__channels",
+    "getting-started__ChannelConfig",
+    "getting-started__troubleshooting"
+   ],
+   "verdict": "hallucinated",
+   "covered": [
+    "socks5"
+   ],
+   "reason": "系统回答覆盖了 socks5 但额外声称支持 http，参考要点中不存在该具体事实，属于编造。"
+  },
+  {
+   "id": "S3-10",
+   "type": "needle",
+   "semantic": false,
+   "question": "Linux 上安装桌面版需要额外装哪个系统依赖包？",
+   "expected_points": [
+    "libwebkit2gtk-4.0-37"
+   ],
+   "answer": "Linux 上安装桌面版需要额外安装 **libwebkit2gtk-4.0** 系统依赖包。\n\n具体包名及安装命令可参考以下来源：\n\n- 在 [getting-started__installation#安装与启动-方式二-桌面模式-桌面模式依赖] 中说明：Linux 需要安装 libwebkit2gtk-4.0，Ubuntu/Debian 使用命令：`sudo apt install libwebkit2gtk-4.0-dev`\n- 在 [getting-started__troubleshooting#常见问题排查-桌面环境-linux-缺少-webkit2gtk] 中说明：桌面模式通常需要系统安装对应 WebKit 依赖，Ubuntu/Debian 可使用：`sudo apt install -y libwebkit2gtk-4.0-37`",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": true,
+   "retrieved_docs": [
+    "getting-started__installation",
+    "getting-started__troubleshooting",
+    "getting-started__update-guide"
+   ],
+   "verdict": "correct",
+   "covered": [
+    "libwebkit2gtk-4.0-37"
+   ],
+   "reason": "系统回答已明确给出参考要点中的依赖包 libwebkit2gtk-4.0-37"
+  },
+  {
+   "id": "S4-01",
+   "type": "negative",
+   "semantic": false,
+   "question": "CountBot 怎么部署到 Kubernetes 集群上？",
+   "expected_points": [
+    "应拒答：官方不支持 K8s 部署"
+   ],
+   "answer": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": null,
+   "retrieved_docs": [
+    "about",
+    "advanced__deployment",
+    "index",
+    "releases__v0.4.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统明确表示知识库中没有相关内容并拒绝回答，但未说明官方不支持 K8s 部署这一拒答依据。"
+  },
+  {
+   "id": "S4-02",
+   "type": "negative",
+   "semantic": false,
+   "question": "CountBot 有官方手机 App 吗？在哪里下载？",
+   "expected_points": [
+    "应拒答：没有官方移动端 App"
+   ],
+   "answer": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": null,
+   "retrieved_docs": [
+    "about",
+    "core__skills-creation",
+    "getting-started__installation",
+    "getting-started__troubleshooting",
+    "getting-started__update-guide",
+    "index"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有相关内容并拒绝回答，但未明确说明没有官方移动端 App。"
+  },
+  {
+   "id": "S4-03",
+   "type": "negative",
+   "semantic": false,
+   "question": "CountBot 支持语音通话吗？",
+   "expected_points": [
+    "应拒答：不支持语音通话"
+   ],
+   "answer": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": null,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "getting-started__installation",
+    "releases__v0.7.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有相关内容，属于拒答，未提供参考要点中的具体信息"
+  },
+  {
+   "id": "S4-04",
+   "type": "negative",
+   "semantic": false,
+   "question": "CountBot 能接入 Home Assistant 控制智能家居设备吗？",
+   "expected_points": [
+    "应拒答：无智能家居集成"
+   ],
+   "answer": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": null,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__remote-access",
+    "index",
+    "releases__v0.7.0",
+    "releases__v0.9.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有找到相关内容，属于拒答。"
+  },
+  {
+   "id": "S4-05",
+   "type": "negative",
+   "semantic": false,
+   "question": "CountBot 商业版是怎么收费的？",
+   "expected_points": [
+    "应拒答：开源项目无商业定价"
+   ],
+   "answer": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": null,
+   "retrieved_docs": [
+    "about",
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "advanced__professional-prompt-engineering",
+    "releases__v0.7.0",
+    "releases__v0.9.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有相关内容，属于拒答，符合应拒答要求"
+  },
+  {
+   "id": "S4-06",
+   "type": "negative",
+   "semantic": false,
+   "question": "可以把 CountBot 的 SQLite 换成 PostgreSQL 吗？官方支持吗？",
+   "expected_points": [
+    "应拒答：仅支持 SQLite，无 PostgreSQL 支持"
+   ],
+   "answer": "根据知识库内容，CountBot 当前技术结构明确使用 SQLite 作为数据库（后端：FastAPI、SQLAlchemy、SQLite），目录结构中也显示 `data/countbot.db` 为 SQLite 数据库。知识库中**没有**提及可以将 SQLite 替换为 PostgreSQL，也没有关于官方支持替换数据库的说明。因此无法基于现有知识库确认该操作是否支持。\n\n引用来源：  \n- [about#关于-countbot-技术结构]：后端包含 SQLite  \n- [advanced__deployment#部署与运维-目录结构]：`countbot.db` 为 SQLite 数据库",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": null,
+   "retrieved_docs": [
+    "about",
+    "advanced__deployment",
+    "getting-started__installation",
+    "getting-started__update-guide",
+    "releases__v0.6.0"
+   ],
+   "verdict": "unknown",
+   "judge_fallback": true
+  },
+  {
+   "id": "S4-07",
+   "type": "negative",
+   "semantic": false,
+   "question": "哪里可以下载 CountBot 的第三方插件？",
+   "expected_points": [
+    "应拒答：无插件市场"
+   ],
+   "answer": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": null,
+   "retrieved_docs": [
+    "getting-started__configuration",
+    "getting-started__installation",
+    "getting-started__update-guide",
+    "index"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有相关内容，属于拒答，但未提及具体原因“无插件市场”。"
+  },
+  {
+   "id": "S4-08",
+   "type": "negative",
+   "semantic": false,
+   "question": "CountBot 能运行在树莓派或 ARM 设备上吗？",
+   "expected_points": [
+    "应拒答：官方未支持 ARM/树莓派"
+   ],
+   "answer": "根据现有知识库，**没有明确说明 CountBot 能否运行在树莓派或 ARM 设备上**。\n\n在“安装与启动 > 环境要求 > 运行 CountBot”中提到：\n\n> Python 3.11+  \n> Windows、macOS 或 Linux  \n> 能访问你准备接入的模型服务  \n> [来源: getting-started__installation#安装与启动-环境要求-运行-countbot]\n\n其中仅列出操作系统要求为 Windows、macOS 或 Linux，并未提到树莓派、ARM 架构或相关设备兼容性。因此无法从知识库中确认 CountBot 是否支持在树莓派或 ARM 设备上运行。",
+   "refused_keyword": false,
+   "has_citation": true,
+   "retrieval_hit": null,
+   "retrieved_docs": [
+    "about",
+    "advanced__remote-access",
+    "getting-started__installation",
+    "index"
+   ],
+   "verdict": "unknown",
+   "judge_fallback": true
+  },
+  {
+   "id": "S4-09",
+   "type": "negative",
+   "semantic": false,
+   "question": "CountBot 支持 SSO 单点登录吗？",
+   "expected_points": [
+    "应拒答：无 SSO 支持"
+   ],
+   "answer": "根据提供的知识库内容，**没有找到关于 CountBot 是否支持 SSO 单点登录的说明**。\n\n知识库中关于认证的部分仅提到：\n\n- CountBot 默认通过 `127.0.0.1:8000` 本地访问时无需登录认证；通过非本地 IP 访问时自动启用认证 [advanced__auth#远程访问认证-概述]。\n- 登录后使用名为 `CountBot_token` 的 Cookie，有效期 365 天，`HttpOnly=True`, `SameSite=Lax` 等设置 [advanced__auth#远程访问认证-登录系统-cookie-机制]。\n\n但上述内容均未涉及 SSO（单点登录）支持情况，因此无法确认 CountBot 是否支持 SSO。",
+   "refused_keyword": true,
+   "has_citation": true,
+   "retrieval_hit": null,
+   "retrieved_docs": [
+    "about",
+    "advanced__auth",
+    "advanced__http-api-deep-dive",
+    "releases__v0.7.0"
+   ],
+   "verdict": "refused",
+   "covered": [],
+   "reason": "系统回答明确表示知识库中没有找到SSO相关说明并无法确认，属于拒答。"
+  },
+  {
+   "id": "S4-10",
+   "type": "negative",
+   "semantic": false,
+   "question": "CountBot 支持视频通话或者屏幕共享吗？",
+   "expected_points": [
+    "应拒答：不支持"
+   ],
+   "answer": "Wiki 知识库中没有找到与该问题相关的内容。（已检索并逐条校验相关性，结果均与问题无关；可以换个问法重试，或确认知识库中是否已有相关条目。）",
+   "refused_keyword": true,
+   "has_citation": false,
+   "retrieval_hit": null,
+   "retrieved_docs": [
+    "advanced__http-api-deep-dive",
+    "advanced__http-flows__multi-turn-conversation",
+    "getting-started__installation",
+    "index",
+    "releases__v0.7.0"
+   ],
+   "verdict": "refused",
+   "covered": [
+    "拒答"
+   ],
+   "reason": "系统明确表示知识库中没有相关内容，属于拒答，未提供支持与否的事实"
+  }
+ ]
+}
