@@ -70,6 +70,15 @@
 - **评测架构 v2 ✅（2026-09-05）**：见 §4.3。
 - **任务 4 ⏳（2026-09-05 实测修订，见 §5 存档）**：`retriever.py` HybridRRF（BM25 top-50 ⊕ Dense top-50 → RRF k=60 → top-6）+ `service.py` 接线 + `COUNTBOT_RAG_HYBRID` 开关。BGE-M3 实测后：RRF 融合在 top-6 注入窗口上是净亏（hit 43→40），形态修订为"RRF 只做候选兜底（union top-50），top-50→top-6 精排交给 Phase 2 rerank"。
 
+### 2.4 Phase 2：重排 + grader 职责收缩（进行中）
+
+- **任务 2.1/2.2 ✅（340a676）**：`reranker.py`——OpenAI 兼容 `/rerank` 客户端（bge-reranker-v2-m3），防御性排序+截断 top_n、`rerank_score` 与检索分分离保留、`COUNTBOT_RAG_RERANK` 开关（默认关）。
+- **任务 2.3 ✅（340a676）**：`_rag_ask` 改造——检索 top-50（`min_score_ratio=0`，候选质量归 reranker 把关）→ rerank top-6 → grader → 生成；**置信门控**：rerank top-1 ≥ 0.7 时跳过 grader 直出（单题 LLM 调用 ≤1.5 门禁的实现手段，阈值待 60 题回归校准）；rerank 失败回落检索排序且必走 grader（降级不裸奔）。
+- **任务 2.4 ✅（340a676）**：grader 收缩为 `all|none` 拒答判定，删除 partial 分支与 `_filter_chunks`（废弃输出按不可解析回退全量生成）；prompt 收缩约 40%。
+- **任务 2.5 ✅（340a676）**：grader/rerank 结果 LRU（容量 256，key=query+chunk_id 集），失败不缓存。
+- **测试**：210 全绿（新增 12：reranker 客户端契约 / 置信门控 / 失败回落 / 缓存行为 / 收缩后解析契约）。
+- **⏳ 待办**：rerank 端点实测验收（需 SiliconFlow 等 bge-reranker 服务）——MRR 相对 +20%、Hit@6 ≥90%、p95 ≤3s、单题调用 ≤1.5、60 题回归（拒答 10/10 不回退 + 正样本 ≥48/50）；`RERANK_CONFIDENT_SCORE=0.7` 的校准。
+
 ---
 
 ## 3. 关键决策记录（ADR 精简版）
