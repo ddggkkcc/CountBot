@@ -33,11 +33,16 @@ MODEL_ENV = "COUNTBOT_RAG_RERANK_MODEL"
 
 DEFAULT_MODEL = "BAAI/bge-reranker-v2-m3"
 
-# rerank top-1 分数 ≥ 该阈值时，调用方可跳过 LLM grader 直出生成
-# （置信门控，Phase 2 验收指标"单题 LLM 调用 2.2→≤1.5"的实现手段）。
-# 0.7 为保守初值：负样本 top-1 的 rerank 分数分布未经 60 题回归校准，
-# 若与正样本重叠则应上调（校准数据见 rag-bench/results/，Phase 2 验收时定稿）。
-RERANK_CONFIDENT_SCORE = 0.7
+# rerank top-1 分数 ≥ 该阈值时，调用方可跳过 LLM grader 直出生成（置信门控）。
+# ⚠️ 2026-09-06 冒烟校准后默认禁用（1.01 = 永不触发）：
+# 负样本问题"部署到 Kubernetes"对 Docker 部署块打分 0.9933，高于正样本
+# "如何用 Docker 部署"对同一块的 0.9046——cross-encoder 度量的是主题匹配
+# 而非可回答性，任何分数阈值都无法分离两者（与 roadmap §3.7/D2"分数门控
+# 挡不住负样本"的既有结论一致，换通道后依然成立）。门控机制保留，
+# 待出现有判别力的信号（如多块分数分布形态）再重新启用。
+# "单题 LLM 调用 ≤1.5"门禁因此暂不达成（实测约 2.0/题：grader+生成），
+# 诚实记录，见 work-log。
+RERANK_CONFIDENT_SCORE = 1.01
 
 _TIMEOUT = 30.0
 _MAX_DOC_CHARS = 2000  # 单块送入 rerank 的文本上限（块本体 ≤1200 字符，防御性截断）

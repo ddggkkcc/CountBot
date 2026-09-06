@@ -425,7 +425,10 @@ class TestRerankRouting:
     """Phase 2 路由：rerank 精排 top-6 + 置信门控跳过 grader + 失败回落"""
 
     def test_high_confidence_skips_grader(self, wiki_dir, rag_env, monkeypatch):
-        """rerank top-1 分数 ≥ 阈值 → 跳过 grader，仅 1 次生成调用"""
+        """rerank top-1 分数 ≥ 阈值 → 跳过 grader，仅 1 次生成调用（门控机制验证，
+        需显式降阈值——默认 1.01 已按校准结论禁用）"""
+        import backend.modules.rag.reranker as reranker_mod
+        monkeypatch.setattr(reranker_mod, "RERANK_CONFIDENT_SCORE", 0.7)
         provider = ScriptedProvider(["ANSWER_DIRECT"])
         _install_provider(monkeypatch, provider)
         tool = WikiTool(wiki_dir)
@@ -436,6 +439,23 @@ class TestRerankRouting:
         assert out == "ANSWER_DIRECT"
         assert len(provider.calls) == 1  # 无 grader 调用
         assert GEN_MARK in provider.calls[0]
+
+    def test_default_threshold_disables_gate(self, wiki_dir, rag_env, monkeypatch):
+        """默认阈值 1.01 = 禁用：即使 top-1 打到 0.99 也必须走 grader。
+        校准依据：负样本话题匹配块可达 0.9933，分数门控无法区分可回答性。"""
+        provider = ScriptedProvider([
+            '{"grade": "all"}',
+            "ANSWER_STILL_GRADED",
+        ])
+        _install_provider(monkeypatch, provider)
+        tool = WikiTool(wiki_dir)
+        tool._reranker = FakeReranker([0.99, 0.30])
+
+        out = asyncio.run(tool._handle_ask("如何用 Docker 部署"))
+
+        assert out == "ANSWER_STILL_GRADED"
+        assert len(provider.calls) == 2  # grader 照跑：门控默认禁用
+        assert GRADING_MARK in provider.calls[0]
 
     def test_low_confidence_still_grades(self, wiki_dir, rag_env, monkeypatch):
         """rerank top-1 分数低于阈值 → 照常走 grader 把关"""

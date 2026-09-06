@@ -326,7 +326,8 @@ class WikiTool(Tool):
             return "Wiki 知识库为空或没有找到相关内容。"
 
         if confident:
-            # top-1 精排分数达置信阈值：跳过 grader，直接生成（省一次 LLM 调用）
+            # top-1 精排分数达置信阈值：跳过 grader，直接生成（省一次 LLM 调用）。
+            # 阈值默认 1.01 = 禁用（校准证据见 reranker.RERANK_CONFIDENT_SCORE 注释）
             return await self._generate_from_chunks(question, chunks)
 
         grade = await self._grade_chunks(question, chunks)
