@@ -44,11 +44,12 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import math
 import sys
 from pathlib import Path
 
 try:
-    from ranx import Qrels, Run, compare, evaluate
+    from ranx import Qrels, Run  # noqa: F401（仅用于块级 run/qrels 的内存构建，统计已纯 Python 化）
 except ImportError:
     sys.exit(
         "缺少 ranx。请安装评测依赖（不并入主 requirements.txt）：\n"
@@ -67,25 +68,34 @@ REPO_ROOT = BENCH.parent           # countbot-rag 仓库根
 # 数据加载
 # ────────────────────────────────────────────
 
-def load_qrels(path: str | Path) -> Qrels:
-    return Qrels.from_file(str(path), kind="trec")
+def parse_trec_plain(path: str | Path, kind: str = "run") -> dict[str, dict[str, float]]:
+    """纯 Python 解析 TREC 文件 → {qid: {doc: score}}
+
+    绕开 ranx 0.3.21 的 Qrels/Run.from_file：其内部用 numba typed dict，纯 Python 层
+    遍历（.items()/to_dict()）在大规模或中文 doc key 上实测抛 KeyError（2026-09-05），
+    本脚本的所有统计一律基于本函数输出的普通 dict，与 ranx 内部实现解耦。
+    kind="run"  取第 5 列分数：qid Q0 doc rank score tag
+    kind="qrels" 取第 4 列等级：qid 0 doc grade
+    """
+    out: dict[str, dict[str, float]] = {}
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
+        parts = line.split()
+        if len(parts) < (5 if kind == "run" else 4):
+            continue
+        qid, doc = parts[0], parts[2]
+        val = float(parts[4] if kind == "run" else parts[3])
+        out.setdefault(qid, {})[doc] = val
+    return out
 
 
-def load_run(path: str | Path, name: str | None = None) -> Run:
-    run = Run.from_file(str(path), kind="trec")
-    if name:
-        run.name = name
-    return run
-
-
-def parse_run_specs(specs: list[str]) -> dict[str, Run]:
-    """解析 TAG=path 形式的 run 参数，返回 {tag: Run}"""
-    runs: dict[str, Run] = {}
+def parse_run_specs(specs: list[str]) -> dict[str, dict[str, float]]:
+    """解析 TAG=path 形式的 run 参数，返回 {tag: plain run dict}"""
+    runs: dict[str, dict[str, float]] = {}
     for spec in specs:
         if "=" not in spec:
             sys.exit(f"run 参数格式应为 TAG=path，收到：{spec}")
         tag, path = spec.split("=", 1)
-        runs[tag] = load_run(path.strip(), name=tag.strip())
+        runs[tag.strip()] = parse_trec_plain(path.strip())
     return runs
 
 
@@ -244,14 +254,14 @@ def build_qrels_from_questions(questions: list[dict], store) -> Qrels:
     return qrels
 
 
-def write_qrels_trec(qrels: Qrels, path: str | Path) -> None:
-    """qrels 落盘为 TREC 格式（<qid> 0 <chunk_id> 1），供复现与其他 run 对照"""
+def write_qrels_trec(qrels: dict[str, dict[str, float]], path: str | Path) -> None:
+    """qrels 落盘为 TREC 格式（<qid> 0 <chunk_id> 1），供复现与其他 run 对照（输入普通 dict）"""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     with open(p, "w", encoding="utf-8") as f:
-        for qid in sorted(qrels.qrels):
-            for cid in sorted(qrels.qrels[qid]):
-                f.write(f"{qid} 0 {cid} 1\n")
+        for qid in sorted(qrels):
+            for cid in sorted(qrels[qid]):
+                f.write(f"{qid} 0 {cid} {int(qrels[qid][cid])}\n")
 
 
 def build_chunk_run(
@@ -341,8 +351,8 @@ def build_vector_run(
     return run
 
 
-def save_runs_trec(runs: dict[str, Run], out_dir: Path) -> None:
-    """把各 run 落盘为 TREC 格式（qid Q0 docid rank score runtag）
+def save_runs_trec(runs: dict[str, dict[str, float]], out_dir: Path) -> None:
+    """把各 run 落盘为 TREC 格式（qid Q0 docid rank score runtag），输入普通 dict
 
     run 只存在于内存，评测进程退出即丢；落盘后任何口径的事后分析
     （按题型/文档子集切分）都能免重嵌重跑直接进行。
@@ -350,22 +360,22 @@ def save_runs_trec(runs: dict[str, Run], out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     for tag, run in runs.items():
         lines = []
-        for qid in run.run:
-            scored = sorted(run.run[qid].items(), key=lambda kv: kv[1], reverse=True)
+        for qid, doc_scores in run.items():
+            scored = sorted(doc_scores.items(), key=lambda kv: kv[1], reverse=True)
             for rank, (doc, score) in enumerate(scored, 1):
-                lines.append(f"{qid} Q0 {doc} {rank} {score:.6f} {run.name}")
+                lines.append(f"{qid} Q0 {doc} {rank} {score:.6f} {tag}")
         path = out_dir / f"{tag}.trec"
         path.write_text("\n".join(lines) + "\n", encoding="utf-8")
         print(f"[runs] saved {path} ({len(lines)} lines)")
 
 
-def per_type_summary(qrels: Qrels, runs: dict[str, Run], qtype_map: dict[str, str]) -> dict:
-    """按题型分组统计 hit_rate@6 / mrr@6（仅正样本题型）
+def per_type_summary(qrels: dict[str, dict[str, float]],
+                     runs: dict[str, dict[str, float]],
+                     qtype_map: dict[str, str]) -> dict:
+    """按题型分组统计 hit_rate@6 / mrr@6（仅正样本题型），返回 {type: {tag: {n, hit@6, mrr@6}}}
 
-    ranx 整表 compare 无法按 qid 子集切分，这里手工实现 top-6 判定：
-    题内相关块 = qrels 中该 qid 下 grade>0 的 doc（块级 qrels 由题目构造，
-    正样本每类型必有相关块，grade 均 1）。
-    返回值 {type: {tag: {n, hit_rate@6, mrr@6}}}。
+    门禁 1 的判定口径依赖本函数：needle+cross_doc 合并池 = 两型 n 与命中数直接相加。
+    输入均为普通 dict（ranx typed dict 的 Python 层遍历不稳定，见 parse_trec_plain 注释）。
     """
     types = sorted({t for t in qtype_map.values() if t != "negative"})
     out: dict = {}
@@ -376,10 +386,9 @@ def per_type_summary(qrels: Qrels, runs: dict[str, Run], qtype_map: dict[str, st
             hits = 0
             rr_sum = 0.0
             for qid in qids:
-                relevant = {d for d, g in qrels.qrels.get(qid, {}).items() if g and g > 0}
-                ranked = [d for d, _ in sorted(run.run[qid].items(),
-                                               key=lambda kv: kv[1], reverse=True)][:6]
-                hit = next((i for i, d in enumerate(ranked, 1) if d in relevant), None)
+                rel = {d for d, g in qrels.get(qid, {}).items() if g and g > 0}
+                ranked = _ranked_docs(run.get(qid, {}))[:6]
+                hit = next((i for i, d in enumerate(ranked, 1) if d in rel), None)
                 if hit is not None:
                     hits += 1
                     rr_sum += 1.0 / hit
@@ -419,49 +428,89 @@ def print_per_type(per_type: dict, runs: dict[str, Run]) -> None:
 # 评测与对比
 # ────────────────────────────────────────────
 
-def summarize(qrels: Qrels, runs: dict[str, Run], metrics: list[str]) -> dict:
-    """各 run 的指标汇总，返回 {tag: {metric: value}}"""
-    if len(runs) == 1:
-        tag, run = next(iter(runs.items()))
-        return {tag: evaluate(qrels, run, metrics)}
-    # ranx 的 compare() 只接受 List[Run]，run 名取自 Run.name
-    report = compare(qrels=qrels, runs=list(runs.values()), metrics=metrics, max_p=0.01)
-    raw = report.to_dict()
-    return {name: raw[name]["scores"] for name in raw["model_names"]}
+def metric_at_single(metric: str, ranked: list[str], rel: set[str]) -> float:
+    """单个 query 的 @k 指标值（ranked 已按分数降序，rel = 相关 doc 集合）
+
+    实现 hit_rate@k / mrr@k / recall@k / ndcg@k（k 缺失视为不截断）。
+    rel 只按 grade>0 判相关（块级 qrels grade 均为 1）。
+    """
+    k = None
+    if "@" in metric:
+        metric, ks = metric.rsplit("@", 1)
+        k = int(ks)
+    if k is not None:
+        ranked = ranked[:k]
+    if metric == "hit_rate":
+        return 1.0 if any(d in rel for d in ranked) else 0.0
+    if metric == "mrr":
+        for i, d in enumerate(ranked, 1):
+            if d in rel:
+                return 1.0 / i
+        return 0.0
+    if metric == "recall":
+        return sum(1 for d in ranked if d in rel) / len(rel) if rel else 0.0
+    if metric == "ndcg":
+        dcg = sum(1.0 / math.log2(i + 2) for i, d in enumerate(ranked) if d in rel)
+        ideal = sum(1.0 / math.log2(i + 2)
+                    for i in range(min(len(rel), len(ranked))))
+        return dcg / ideal if ideal else 0.0
+    if metric == "map":
+        # AP@k = Σ(命中位置 P@r) / min(|rel|, k)，再对 query 平均
+        ap, hits = 0.0, 0
+        for i, d in enumerate(ranked, 1):
+            if d in rel:
+                hits += 1
+                ap += hits / i
+        denom = min(len(rel), len(ranked))
+        return ap / denom if denom else 0.0
+    raise NotImplementedError(f"手工统计暂未实现指标：{metric}")
+
+
+def _ranked_docs(doc_scores: dict) -> list[str]:
+    """按分数降序返回 doc 列表"""
+    return [d for d, _ in sorted(doc_scores.items(), key=lambda kv: kv[1], reverse=True)]
+
+
+def summarize(qrels: dict[str, dict[str, float]],
+              runs: dict[str, dict[str, float]],
+              metrics: list[str]) -> dict:
+    """各 run 的指标汇总，返回 {tag: {metric: value}}
+
+    纯 Python 实现（按 qrels∩run 的公共 qid 平均），替代 ranx compare/evaluate——
+    ranx 0.3.21 的 numba typed dict 在纯 Python 层遍历不稳定（2026-09-05 实测
+    KeyError/TypingError），指标公式见 metric_at_single。
+    """
+    out: dict[str, dict[str, float]] = {}
+    for tag, run in runs.items():
+        qids = sorted(set(qrels) & set(run))
+        n = len(qids)
+        scores = {m: 0.0 for m in metrics}
+        for qid in qids:
+            rel = {d for d, g in qrels[qid].items() if g and g > 0}
+            ranked = _ranked_docs(run[qid])
+            for m in metrics:
+                scores[m] += metric_at_single(m, ranked, rel)
+        out[tag] = {m: (s / n if n else 0.0) for m, s in scores.items()}
+    return out
 
 
 def per_query_diff(
-    qrels: Qrels,
-    baseline: Run,
-    target: Run,
+    qrels: dict[str, dict[str, float]],
+    baseline: dict[str, dict[str, float]],
+    target: dict[str, dict[str, float]],
     metrics: list[str],
     main_metric: str = "ndcg@10",
 ) -> list[dict]:
     """逐 query 对比，识别变好 / 变坏的题目（实验卡片"变好变坏"栏）
 
-    注意：对 24K 量级查询会较慢，大规模数据集建议先抽样。
+    纯 Python 实现（metric_at_single），输入普通 dict。对 24K 量级查询仍建议抽样。
     """
     diffs: list[dict] = []
-    query_ids = sorted(set(qrels.qrels.keys()) & set(target.run.keys()))
-
+    query_ids = sorted(set(qrels) & set(baseline) & set(target))
     for qid in query_ids:
-        sub_qrels = Qrels()
-        if qid in qrels.qrels:
-            for doc_id, score in qrels.qrels[qid].items():
-                sub_qrels.add_score(qid, doc_id, score)
-
-        sub_base = Run()
-        if qid in baseline.run:
-            for doc_id, score in baseline.run[qid].items():
-                sub_base.add_score(qid, doc_id, score)
-
-        sub_target = Run()
-        if qid in target.run:
-            for doc_id, score in target.run[qid].items():
-                sub_target.add_score(qid, doc_id, score)
-
-        before = evaluate(sub_qrels, sub_base, metrics).get(main_metric, 0.0)
-        after = evaluate(sub_qrels, sub_target, metrics).get(main_metric, 0.0)
+        rel = {d for d, g in qrels[qid].items() if g and g > 0}
+        before = metric_at_single(main_metric, _ranked_docs(baseline[qid]), rel)
+        after = metric_at_single(main_metric, _ranked_docs(target[qid]), rel)
         diffs.append(
             {
                 "query_id": qid,
@@ -470,7 +519,6 @@ def per_query_diff(
                 "delta": round(after - before, 4),
             }
         )
-
     diffs.sort(key=lambda r: r["delta"])
     return diffs
 
@@ -533,28 +581,24 @@ def self_test() -> int:
 
     print("运行自检：构造 20 个查询 × 200 篇文档的合成数据...\n")
 
-    qrels = Qrels()
-    base_run = Run()
-    base_run.name = "G0"
-    good_run = Run()
-    good_run.name = "G1"
+    # 全流程已纯 Python 化（普通 dict），自检直接构造 dict，不再经过 ranx 对象
+    qrels: dict[str, dict[str, float]] = {}
+    base_run: dict[str, dict[str, float]] = {}
+    good_run: dict[str, dict[str, float]] = {}
 
     for q in range(20):
         qid = f"q{q}"
         gold = f"d{q}"
-        qrels.add_score(qid, gold, 1)
+        qrels.setdefault(qid, {})[gold] = 1.0
 
         # 基线：黄金文档排在第 8 位（次优基线）
-        for rank, doc_id in enumerate([f"d{(q + i) % 200}" for i in range(50)]):
-            if doc_id != gold:
-                base_run.add_score(qid, doc_id, 50.0 - rank)
-        base_run.add_score(qid, gold, 50.0 - 7)
-
+        base_run[qid] = {f"d{(q + i) % 200}": 50.0 - rank
+                         for rank, i in enumerate(range(50))
+                         if f"d{(q + i) % 200}" != gold}
+        base_run[qid][gold] = 50.0 - 7
         # 改进后：黄金文档排在第 1 位
-        good_run.add_score(qid, gold, 100.0)
-        for rank, doc_id in enumerate([f"d{(q + i) % 200}" for i in range(49)]):
-            if doc_id != gold:
-                good_run.add_score(qid, doc_id, 50.0 - rank)
+        good_run[qid] = dict(base_run[qid])
+        good_run[qid][gold] = 100.0
 
     with tempfile.TemporaryDirectory() as tmp:
         out_dir = Path(tmp) / "report"
@@ -625,25 +669,34 @@ def main() -> int:
         # 检索指标只评正样本：negative 题无 relevant chunk（拒答归 run_crag_eval.py）
         queries = {q["id"]: q["question"] for q in questions if q["type"] != "negative"}
         qtype_map = {q["id"]: q["type"] for q in questions}
-        qrels = build_qrels_from_questions(questions, store)
+        # ranx 内存对象（add_score 构建）的 to_dict() 安全；文件输入走 parse_trec_plain
+        qrels = build_qrels_from_questions(questions, store).to_dict()
         if args.write_qrels:
             write_qrels_trec(qrels, args.write_qrels)
         if args.chunk_run:
             runs[args.chunk_run] = build_chunk_run(
                 store, queries, top_k=args.top_k,
                 bypass_threshold=not args.keep_threshold, name=args.chunk_run,
-            )
+            ).to_dict()
         if args.dense_run:
             runs[args.dense_run] = build_vector_run(
-                args.corpus, queries, mode="dense", top_k=args.top_k, name=args.dense_run)
+                args.corpus, queries, mode="dense", top_k=args.top_k, name=args.dense_run,
+            ).to_dict()
         if args.hybrid_run:
             runs[args.hybrid_run] = build_vector_run(
-                args.corpus, queries, mode="hybrid", top_k=args.top_k, name=args.hybrid_run)
+                args.corpus, queries, mode="hybrid", top_k=args.top_k, name=args.hybrid_run,
+            ).to_dict()
     elif args.qrels:
-        qrels = load_qrels(args.qrels)
+        qrels = parse_trec_plain(args.qrels, kind="qrels")
 
     if qrels is None:
         parser.error("需要 --qrels、--chunk-run / --dense-run / --hybrid-run 或 --self-test 之一")
+
+    # --run + --qrels 的事后分析路径：qtype_map 从题目文件补全（只保留 qrels 里真实存在的
+    # qid，避免文档级 qrels 下注入不匹配的 60 题映射导致按题型分表全零的误导输出）。
+    if qtype_map is None and args.qrels:
+        qtype_map = {q["id"]: q["type"] for q in load_questions_jsonl(args.questions_jsonl)
+                     if q["id"] in qrels}
 
     if args.bm25_corpus:
         if not args.queries:
@@ -655,7 +708,7 @@ def main() -> int:
             top_k=args.top_k,
             bypass_threshold=not args.keep_threshold,
             name=args.tag,
-        )
+        ).to_dict()
 
     if not runs:
         parser.error("没有可评测的 run，用 --run / --bm25-corpus / --chunk-run 提供")
@@ -670,7 +723,9 @@ def main() -> int:
     diff = None
     if args.baseline and args.baseline in runs and len(runs) > 1:
         others = [t for t in runs if t != args.baseline]
-        diff = per_query_diff(qrels, runs[args.baseline], runs[others[0]], metrics)
+        # 主指标取本 run 的第一个指标（块级=hit_rate@6），不要用默认 ndcg@10
+        diff = per_query_diff(qrels, runs[args.baseline], runs[others[0]], metrics,
+                              main_metric=metrics[0])
 
     if args.write_runs:
         save_runs_trec(runs, Path(args.write_runs))
