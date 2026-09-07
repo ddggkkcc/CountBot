@@ -412,18 +412,23 @@ class WikiTool(Tool):
             return None
 
         lines = [
-            f"{i}. {c['doc_title']} › {c['section']}：{c['content'].strip()[:120]}"
+            f"{i}. {c['doc_title']} › {c['section']}：{c['content'].strip()[:300]}"
             for i, c in enumerate(chunks, 1)
         ]
         prompt = (
-            "你是知识库检索质量评估器。判断检索结果中是否有与问题相关的信息。\n\n"
+            "你是知识库检索质量评估器。判断检索结果中是否包含回答问题所需的"
+            "具体信息。\n\n"
             f"问题：{question}\n\n"
             "检索结果（编号. 文档 › 章节：内容摘录）：\n" + "\n".join(lines) + "\n\n"
             '只输出一行 JSON，不要输出其他内容：\n'
             '{"grade": "all|none"}\n'
-            "- all：至少一条结果与问题相关（哪怕只覆盖问题的一部分）\n"
-            "- none：仅当所有结果都与问题完全无关时使用；"
-            "不确定时判 all（宁可生成，不误拒答）"
+            "- all：至少一条结果包含与问题直接相关的具体信息"
+            "（事实/数字/命令/配置，或能支撑回答的内容；"
+            "跨文档问题允许各结果各覆盖一部分）\n"
+            "- none：所有结果只是话题相近、缺少回答所需的具体内容，"
+            "或与问题完全无关。问具体数字/名称/命令而结果中给不出该值时，"
+            "必须判 none——证据不足时宁可拒答，"
+            "不要让话题相近的块蒙混过关"
         )
         try:
             resp = await provider.chat_completion(prompt, max_tokens=200, temperature=0.0)
